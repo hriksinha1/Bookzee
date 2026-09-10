@@ -35,3 +35,22 @@ export interface ActivityEvent {
   type: 'payment' | 'booking' | 'refund';
   amount?: number;
 }
+
+export interface AnalyticsPoint {
+  date: string;
+  bookingValue: number;
+  collected: number;
+}
+
+export interface OverviewAnalytics {
+  range: {
+    start: string;
+    end: string;
+  };
+  points: AnalyticsPoint[];
+  totals: {
+    bookingValue: number;
+    collected: number;
+    outstanding: number;
+  };
+}

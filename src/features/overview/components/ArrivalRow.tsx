@@ -22,36 +22,36 @@ export default function ArrivalRow({
   const isCheckedIn = booking.booking_status === 'Checked In';
 
   return (
-    <div className="py-3 px-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:bg-[#FAF9F6] transition-colors">
+    <div className="py-3.5 px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#FAF9F6] transition-colors">
       {/* Primary guest & stay metadata */}
-      <div className="space-y-0.5 min-w-0">
-        <div className="flex items-baseline gap-2">
-          <span className="font-semibold text-sm text-[#1A2B28] truncate">
+      <div className="space-y-1 min-w-0">
+        <div className="flex items-baseline gap-2.5">
+          <span className="font-semibold text-[15px] text-[#1A2B28] truncate">
             {booking.customer?.name || 'Guest'}
           </span>
           {isCheckedIn && (
-            <span className="text-[11px] font-medium text-[#276749] inline-flex items-center gap-1">
-              <CheckCircle2 size={12} /> Checked in
+            <span className="text-xs font-medium text-[#276749] inline-flex items-center gap-1">
+              <CheckCircle2 size={13} /> Checked in
             </span>
           )}
         </div>
 
-        <div className="text-xs text-[#5C6E6B]">
+        <div className="text-[13px] text-[#5C6E6B]">
           {booking.property?.name} · {booking.room_type}
         </div>
 
-        <div className="text-[11px] text-[#7E8F8C]">
+        <div className="text-xs text-[#7E8F8C]">
           Expected today · {booking.nights} {booking.nights === 1 ? 'night' : 'nights'}
         </div>
       </div>
 
       {/* Financial info & Actions */}
-      <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0">
+      <div className="flex items-center justify-between sm:justify-end gap-3.5 shrink-0 pt-1 sm:pt-0">
         <div className="text-left sm:text-right">
           <div className="text-xs font-semibold text-[#1A2B28]">
             {fmtINR(booking.grand_total)}
           </div>
-          <div className="text-[11px]">
+          <div className="text-[11px] font-medium">
             {fin.amountDue === 0 ? (
               <span className="text-[#276749]">Paid in full</span>
             ) : fin.paid > 0 ? (
@@ -67,7 +67,7 @@ export default function ArrivalRow({
             <button
               type="button"
               onClick={(e) => onCheckIn(booking, e)}
-              className="px-3 py-1.5 rounded-lg bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors shadow-2xs"
+              className="px-3.5 py-1.5 rounded-lg bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors shadow-2xs"
             >
               Check in
             </button>

@@ -13,7 +13,7 @@ export default function ActivityList({ events }: ActivityListProps) {
         <h2 className="text-xs font-semibold uppercase tracking-wider text-[#1A2B28]">
           Recent activity
         </h2>
-        <span className="text-xs text-[#5C6E6B]">Event audit stream</span>
+        <span className="text-xs text-[#5C6E6B]">Latest events</span>
       </div>
 
       <div className="rounded-xl border border-[#D8D2C5] bg-white overflow-hidden shadow-2xs">

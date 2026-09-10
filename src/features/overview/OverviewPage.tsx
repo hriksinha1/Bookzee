@@ -28,7 +28,8 @@ export default function OverviewPage() {
     attentionItems,
     todayMetrics,
     financialSnapshot,
-    activityFeed
+    activityFeed,
+    analytics
   } = useOverviewData(propertyFilter);
 
   // Payment recording modal state
@@ -79,35 +80,41 @@ export default function OverviewPage() {
   // Skeleton Loading State
   if (loading) {
     return (
-      <div className="space-y-6 max-w-5xl mx-auto pb-10 animate-pulse">
+      <div className="space-y-7 max-w-7xl xl:max-w-[1320px] mx-auto pb-12 animate-pulse">
         {/* Header Skeleton */}
         <div className="flex justify-between items-baseline pb-2 border-b border-[#EAE5DC]">
-          <div className="space-y-1.5">
-            <div className="h-7 w-32 bg-stone-200 rounded-lg" />
-            <div className="h-4 w-56 bg-stone-200/70 rounded-md" />
+          <div className="space-y-2">
+            <div className="h-8 w-36 bg-stone-200 rounded-lg" />
+            <div className="h-4 w-64 bg-stone-200/70 rounded-md" />
           </div>
-          <div className="flex gap-2">
-            <div className="h-8 w-24 bg-stone-200 rounded-lg" />
-            <div className="h-8 w-28 bg-stone-200 rounded-lg" />
+          <div className="flex gap-2.5">
+            <div className="h-9 w-24 bg-stone-200 rounded-lg" />
+            <div className="h-9 w-28 bg-stone-200 rounded-lg" />
           </div>
         </div>
 
         {/* Action Skeleton */}
         <div className="space-y-2">
           <div className="h-4 w-28 bg-stone-200 rounded-md" />
-          <div className="h-16 rounded-xl border border-[#D8D2C5] bg-white" />
+          <div className="h-20 rounded-xl border border-[#D8D2C5] bg-white" />
         </div>
 
         {/* Today Skeleton */}
         <div className="space-y-2">
-          <div className="h-4 w-36 bg-stone-200 rounded-md" />
-          <div className="h-48 rounded-xl border border-[#D8D2C5] bg-white" />
+          <div className="h-4 w-40 bg-stone-200 rounded-md" />
+          <div className="h-64 rounded-xl border border-[#D8D2C5] bg-white" />
         </div>
 
         {/* In-House Skeleton */}
         <div className="space-y-2">
-          <div className="h-4 w-32 bg-stone-200 rounded-md" />
-          <div className="h-28 rounded-xl border border-[#D8D2C5] bg-white" />
+          <div className="h-4 w-36 bg-stone-200 rounded-md" />
+          <div className="h-32 rounded-xl border border-[#D8D2C5] bg-white" />
+        </div>
+
+        {/* Lower Grid Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 h-72 rounded-xl border border-[#D8D2C5] bg-white" />
+          <div className="lg:col-span-1 h-72 rounded-xl border border-[#D8D2C5] bg-white" />
         </div>
       </div>
     );
@@ -132,17 +139,17 @@ export default function OverviewPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-10">
+    <div className="space-y-7 max-w-7xl xl:max-w-[1320px] mx-auto pb-12">
       {/* 1. HEADER */}
       <OverviewHeader onNewBooking={() => navigate('/bookings/new')} />
 
-      {/* 2. NEEDS ACTION */}
+      {/* 2. NEEDS ACTION (Exception Queue Only) */}
       <NeedsActionSection
         items={attentionItems}
         onRecordPayment={handleAttentionRecordPayment}
       />
 
-      {/* 3. TODAY */}
+      {/* 3. TODAY (Primary Operational Workspace) */}
       <TodaySection
         metrics={todayMetrics}
         paymentsByBookingId={paymentsByBookingId}
@@ -151,7 +158,7 @@ export default function OverviewPage() {
         onRecordPayment={handleRecordPayment}
       />
 
-      {/* 4. CURRENTLY IN-HOUSE */}
+      {/* 4. CURRENTLY IN-HOUSE (Reference Stays) */}
       <InHouseSection
         inHouse={todayMetrics.inHouse}
         paymentsByBookingId={paymentsByBookingId}
@@ -160,7 +167,7 @@ export default function OverviewPage() {
       {/* 5. MONEY & 6. RECENT ACTIVITY */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-2">
-          <MoneySummary data={financialSnapshot} />
+          <MoneySummary data={financialSnapshot} analytics={analytics} />
         </div>
 
         <div className="lg:col-span-1">

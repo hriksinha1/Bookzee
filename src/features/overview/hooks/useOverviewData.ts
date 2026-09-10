@@ -7,7 +7,14 @@ import {
   selectFinancialSnapshot,
   selectRecentActivity
 } from '../selectors/overviewSelectors';
-import { AttentionItem, TodayMetrics, FinancialSnapshotData, ActivityEvent } from '../types';
+import { OverviewAnalyticsService } from '../services/overviewAnalyticsService';
+import {
+  AttentionItem,
+  TodayMetrics,
+  FinancialSnapshotData,
+  ActivityEvent,
+  OverviewAnalytics
+} from '../types';
 
 export function useOverviewData(propertyFilter?: string) {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -80,6 +87,11 @@ export function useOverviewData(propertyFilter?: string) {
     [payments, bookings]
   );
 
+  const analytics = useMemo<OverviewAnalytics>(
+    () => OverviewAnalyticsService.getAnalytics(bookings, payments, propertyFilter, 14, true),
+    [bookings, payments, propertyFilter]
+  );
+
   return {
     loading,
     error,
@@ -92,6 +104,7 @@ export function useOverviewData(propertyFilter?: string) {
     attentionItems,
     todayMetrics,
     financialSnapshot,
-    activityFeed
+    activityFeed,
+    analytics
   };
 }

@@ -1,62 +1,64 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { FinancialSnapshotData } from '../types';
+import { FinancialSnapshotData, OverviewAnalytics } from '../types';
 import { fmtINR } from '../../../lib/utils/formatters';
+import CollectionsChart from './CollectionsChart';
 
 interface MoneySummaryProps {
   data: FinancialSnapshotData;
+  analytics?: OverviewAnalytics;
 }
 
-export default function MoneySummary({ data }: MoneySummaryProps) {
+export default function MoneySummary({ data, analytics }: MoneySummaryProps) {
   return (
     <section className="space-y-2.5">
       <div className="flex items-center justify-between">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-[#1A2B28]">
           Money
         </h2>
-        <span className="text-xs text-[#5C6E6B]">Portfolio receivables</span>
+        <span className="text-xs text-[#5C6E6B]">Financial snapshot</span>
       </div>
 
-      <div className="p-4 rounded-xl border border-[#D8D2C5] bg-white shadow-2xs space-y-4">
-        {/* Horizontal summary */}
+      <div className="p-4 sm:p-5 rounded-xl border border-[#D8D2C5] bg-white shadow-2xs space-y-4">
+        {/* Clean 3-column financial values */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-[#EAE5DC]">
           <div className="pt-2 sm:pt-0 sm:px-2 first:px-0">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5C6E6B]">
               Booking value
             </span>
-            <div className="text-xl font-bold text-[#1A2B28] mt-0.5 tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-[#1A2B28] mt-1 tracking-tight">
               {fmtINR(data.bookingValue)}
             </div>
-            <p className="text-[11px] text-[#7E8F8C] mt-0.5">Total confirmed tariffs</p>
           </div>
 
           <div className="pt-2 sm:pt-0 sm:px-4">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5C6E6B]">
               Collected
             </span>
-            <div className="text-xl font-bold text-[#276749] mt-0.5 tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-[#276749] mt-1 tracking-tight">
               {fmtINR(data.collected)}
             </div>
-            <p className="text-[11px] text-[#7E8F8C] mt-0.5">
-              {data.bookingValue > 0
-                ? `${Math.round((data.collected / data.bookingValue) * 100)}% settled`
-                : '100%'}
-            </p>
           </div>
 
           <div className="pt-2 sm:pt-0 sm:px-4">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5C6E6B]">
               Outstanding
             </span>
-            <div className="text-xl font-bold text-[#C45532] mt-0.5 tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-[#C45532] mt-1 tracking-tight">
               {fmtINR(data.outstanding)}
             </div>
-            <p className="text-[11px] text-[#7E8F8C] mt-0.5">Awaiting collection</p>
           </div>
         </div>
 
-        {/* Clean links */}
+        {/* Collections Over Time Chart */}
+        {analytics && (
+          <div className="pt-4 border-t border-[#EAE5DC]">
+            <CollectionsChart analytics={analytics} />
+          </div>
+        )}
+
+        {/* Clean navigation links */}
         <div className="pt-3 border-t border-[#EAE5DC] flex items-center justify-between text-xs">
           <Link
             to="/payments"

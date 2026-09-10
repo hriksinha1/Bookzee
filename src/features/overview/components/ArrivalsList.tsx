@@ -16,12 +16,11 @@ export default function ArrivalsList({
 }: ArrivalsListProps) {
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between pb-1.5 border-b border-[#EAE5DC]">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#1A2B28] flex items-center gap-1.5">
-          <LogIn size={13} className="text-[#0D5C56]" />
-          <span>Arrivals ({arrivals.length})</span>
+      <div className="flex items-center justify-between pb-2 border-b border-[#EAE5DC]">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-[#1A2B28]">
+          Arrivals ({arrivals.length})
         </h3>
-        <span className="text-[11px] text-[#5C6E6B]">Check-in open</span>
+        <span className="text-[11px] text-[#5C6E6B]">Expected today</span>
       </div>
 
       {arrivals.length === 0 ? (

@@ -52,13 +52,12 @@ export default function InHouseSection({
                 >
                   {expanded ? (
                     <>
-                      <span>Show fewer stays</span>
+                      <span>Show fewer</span>
                       <ChevronUp size={13} />
                     </>
                   ) : (
                     <>
-                      <span>View all {inHouse.length} in-house stays</span>
-                      <ChevronDown size={13} />
+                      <span>View all {inHouse.length} in-house →</span>
                     </>
                   )}
                 </button>

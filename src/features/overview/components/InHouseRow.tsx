@@ -18,11 +18,11 @@ export default function InHouseRow({ booking, payments }: InHouseRowProps) {
   return (
     <div
       onClick={() => navigate(`/bookings/${booking.id}`)}
-      className="py-2.5 px-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#FAF9F6] transition-colors cursor-pointer group select-none"
+      className="py-3 px-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:bg-[#FAF9F6] transition-colors cursor-pointer group select-none"
     >
       <div className="space-y-0.5 min-w-0">
-        <div className="flex items-baseline gap-2">
-          <span className="font-semibold text-sm text-[#1A2B28] group-hover:text-[#0D5C56] transition-colors">
+        <div className="flex items-baseline gap-2.5">
+          <span className="font-semibold text-sm text-[#1A2B28] group-hover:text-[#0D5C56] transition-colors truncate">
             {booking.customer?.name || 'Guest'}
           </span>
           <span className="text-xs text-[#7E8F8C]">
@@ -30,7 +30,7 @@ export default function InHouseRow({ booking, payments }: InHouseRowProps) {
           </span>
         </div>
 
-        <div className="text-xs text-[#5C6E6B]">
+        <div className="text-[13px] text-[#5C6E6B]">
           {booking.property?.name} · {booking.room_type}
         </div>
       </div>
@@ -40,11 +40,11 @@ export default function InHouseRow({ booking, payments }: InHouseRowProps) {
           <div className="text-xs font-semibold text-[#1A2B28]">
             {fmtINR(booking.grand_total)}
           </div>
-          <div className="text-[11px]">
+          <div className="text-[11px] font-medium">
             {fin.amountDue === 0 ? (
               <span className="text-[#276749]">Paid in full</span>
             ) : (
-              <span className="text-[#C45532]">Due: {fmtINR(fin.amountDue)}</span>
+              <span className="text-[#C45532]">{fmtINR(fin.amountDue)} due</span>
             )}
           </div>
         </div>
