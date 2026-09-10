@@ -19,20 +19,25 @@ export const colors = {
   },
   surface: {
     page: '#F8F7F4', // Warm stone linen canvas
+    panel: '#FFFFFF', // Clean surface panel
     card: '#FFFFFF',
     cardMuted: '#F3F0EA',
-    subtle: '#FAF9F6',
+    subtle: '#FAF9F6', // Soft elevated background
+    highlight: '#E8F3F1',
   },
   text: {
     primary: '#1A2B28', // Deepest charcoal with subtle pine undertone
     secondary: '#5C6E6B', // Muted slate pine
-    tertiary: '#8E9E9B', // Soft caption
+    muted: '#7E8F8C', // Accessible caption / helper text
+    tertiary: '#8E9E9B',
     inverted: '#FFFFFF',
+    accent: '#C45532',
   },
   border: {
-    subtle: '#EAE5DC',
+    subtle: '#EAE5DC', // Light divider
+    default: '#D8D2C5', // Standard card / input border
     main: '#D8D2C5',
-    strong: '#C2BBB0',
+    strong: '#C2BBB0', // Higher contrast border
   },
   semantic: {
     success: '#276749',
@@ -47,6 +52,16 @@ export const colors = {
     info: '#2B6CB0',
     infoBg: '#EEF6FC',
     infoBorder: '#BEE3F8',
+  },
+  calendar: {
+    stay: '#F0ECE4', // Neutral / soft surface for stays
+    stayBorder: '#D8D2C5',
+    stayText: '#1A2B28',
+    selection: '#0D5C56',
+    paymentDue: '#C45532',
+    paymentDueBg: '#FAF0EB',
+    checkedOut: '#8E9E9B',
+    checkedOutBg: '#F2EFEA',
   }
 };
 
@@ -64,4 +79,3 @@ export const shadows = {
   raised: '0 4px 12px -2px rgba(20, 35, 30, 0.08), 0 2px 6px -1px rgba(20, 35, 30, 0.04)',
   dialog: '0 16px 32px -8px rgba(20, 35, 30, 0.16), 0 8px 16px -4px rgba(20, 35, 30, 0.08)',
 };
-
