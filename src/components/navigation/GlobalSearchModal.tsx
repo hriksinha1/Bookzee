@@ -203,7 +203,7 @@ export default function GlobalSearchModal({ isOpen, onClose }: GlobalSearchModal
                     {filteredGuests.map((g) => (
                       <button
                         key={g.id}
-                        onClick={() => handleSelect('/guests')}
+                        onClick={() => handleSelect(`/guests/${g.id}`)}
                         className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[#FAF9F6] transition-colors text-left group"
                       >
                         <div>

@@ -25,7 +25,7 @@ export default function OverviewHeader({ onNewBooking }: OverviewHeaderProps) {
         <div className="flex items-center gap-2 mt-1">
           <span className="text-sm font-semibold text-[#1A2B28]">{formattedDate}</span>
           <span className="text-stone-300">·</span>
-          <span className="text-xs text-[#5C6E6B]">Today's stays and front-desk activity</span>
+          <span className="text-xs text-[#5C6E6B]">Today's stays and front-desk activity.</span>
         </div>
       </div>
 

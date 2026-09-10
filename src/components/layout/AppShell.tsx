@@ -7,7 +7,6 @@ import {
   Users,
   Building2,
   CreditCard,
-  AlertCircle,
   BarChart3,
   Settings as SettingsIcon,
   LogOut,
@@ -71,7 +70,6 @@ export default function AppShell({ onLogout }: { onLogout: () => void }) {
       section: 'MONEY',
       items: [
         { to: '/payments', label: 'Payments', icon: CreditCard },
-        { to: '/outstanding', label: 'Outstanding', icon: AlertCircle },
       ],
     },
     {

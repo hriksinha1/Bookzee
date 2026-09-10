@@ -1,26 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { repository } from '../../../lib/repository';
-import { Booking, Payment, Property, Customer } from '../../../lib/repository/types';
-import {
-  selectAttentionItems,
-  selectTodayMetrics,
-  selectFinancialSnapshot,
-  selectRecentActivity
-} from '../selectors/overviewSelectors';
-import { OverviewAnalyticsService } from '../services/overviewAnalyticsService';
-import {
-  AttentionItem,
-  TodayMetrics,
-  FinancialSnapshotData,
-  ActivityEvent,
-  OverviewAnalytics
-} from '../types';
+import { Booking, Payment } from '../../../lib/repository/types';
+import { selectTodayMetrics } from '../selectors/overviewSelectors';
+import { TodayMetrics } from '../types';
 
 export function useOverviewData(propertyFilter?: string) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,16 +14,12 @@ export function useOverviewData(propertyFilter?: string) {
     setLoading(true);
     setError(null);
     try {
-      const [bList, pList, propList, custList] = await Promise.all([
+      const [bList, pList] = await Promise.all([
         repository.getBookings(propertyFilter || undefined),
-        repository.getAllPayments(propertyFilter || undefined),
-        repository.getProperties(),
-        repository.getCustomers()
+        repository.getAllPayments(propertyFilter || undefined)
       ]);
       setBookings(bList);
       setPayments(pList);
-      setProperties(propList);
-      setCustomers(custList);
     } catch (err: any) {
       console.error('Failed to load overview data', err);
       setError("Couldn't load today's operations.");
@@ -66,45 +48,17 @@ export function useOverviewData(propertyFilter?: string) {
     return map;
   }, [payments]);
 
-  // Derived state via pure selectors
-  const attentionItems = useMemo<AttentionItem[]>(
-    () => selectAttentionItems(bookings, paymentsByBookingId, todayStr),
-    [bookings, paymentsByBookingId, todayStr]
-  );
-
+  // Derived today's operations
   const todayMetrics = useMemo<TodayMetrics>(
     () => selectTodayMetrics(bookings, todayStr),
     [bookings, todayStr]
-  );
-
-  const financialSnapshot = useMemo<FinancialSnapshotData>(
-    () => selectFinancialSnapshot(bookings, paymentsByBookingId),
-    [bookings, paymentsByBookingId]
-  );
-
-  const activityFeed = useMemo<ActivityEvent[]>(
-    () => selectRecentActivity(payments, bookings),
-    [payments, bookings]
-  );
-
-  const analytics = useMemo<OverviewAnalytics>(
-    () => OverviewAnalyticsService.getAnalytics(bookings, payments, propertyFilter, 14, true),
-    [bookings, payments, propertyFilter]
   );
 
   return {
     loading,
     error,
     refresh: loadData,
-    bookings,
-    payments,
-    properties,
-    customers,
     paymentsByBookingId,
-    attentionItems,
-    todayMetrics,
-    financialSnapshot,
-    activityFeed,
-    analytics
+    todayMetrics
   };
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronUp } from 'lucide-react';
 import { Booking, Payment } from '../../../lib/repository/types';
 import InHouseRow from './InHouseRow';
 
@@ -13,7 +13,7 @@ export default function InHouseSection({
   paymentsByBookingId
 }: InHouseSectionProps) {
   const [expanded, setExpanded] = useState(false);
-  const displayed = expanded ? inHouse : inHouse.slice(0, 4);
+  const displayed = expanded ? inHouse : inHouse.slice(0, 5);
 
   return (
     <section className="space-y-2.5">
@@ -43,7 +43,7 @@ export default function InHouseSection({
               ))}
             </div>
 
-            {inHouse.length > 4 && (
+            {inHouse.length > 5 && (
               <div className="p-2.5 bg-[#FAF9F6] border-t border-[#EAE5DC] text-center">
                 <button
                   type="button"
@@ -56,9 +56,7 @@ export default function InHouseSection({
                       <ChevronUp size={13} />
                     </>
                   ) : (
-                    <>
-                      <span>View all {inHouse.length} in-house →</span>
-                    </>
+                    <span>View all {inHouse.length} in-house →</span>
                   )}
                 </button>
               </div>

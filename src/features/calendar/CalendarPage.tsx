@@ -146,27 +146,21 @@ export default function CalendarPage() {
       {/* Calendar Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <CalendarIcon size={16} className="text-[#0D5C56]" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#0D5C56]">
-              Operational Timeline
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] mt-1 tracking-tight">
-            Hospitality Calendar
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] tracking-tight">
+            Calendar
           </h1>
-          <p className="text-xs sm:text-sm text-[#5C6E6B] mt-0.5">
-            Occupancy and room stay schedule across properties.
+          <p className="text-sm text-[#5C6E6B] mt-1">
+            Visual occupancy and room schedule across properties.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => navigate('/bookings/new')}
-          className="px-4 py-2 rounded-xl bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors flex items-center gap-1.5 shadow-2xs self-start sm:self-auto"
+          className="px-3.5 py-2 rounded-lg bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors flex items-center gap-1.5 shadow-2xs self-start sm:self-auto"
         >
           <Plus size={15} />
-          <span>New Booking</span>
+          <span>New booking</span>
         </button>
       </header>
 

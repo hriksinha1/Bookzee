@@ -4,16 +4,12 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
 import { AppContextType } from '../../components/layout/AppShell';
 import { useOverviewData } from './hooks/useOverviewData';
 import OverviewHeader from './components/OverviewHeader';
-import NeedsActionSection from './components/NeedsActionSection';
 import TodaySection from './components/TodaySection';
 import InHouseSection from './components/InHouseSection';
-import MoneySummary from './components/MoneySummary';
-import ActivityList from './components/ActivityList';
 import AddPaymentModal from '../bookings/AddPaymentModal';
 import { Booking } from '../../lib/repository/types';
 import { repository } from '../../lib/repository';
 import { useToast } from '../../context/ToastContext';
-import { AttentionItem } from './types';
 
 export default function OverviewPage() {
   const { propertyFilter } = useOutletContext<AppContextType>();
@@ -25,11 +21,7 @@ export default function OverviewPage() {
     error,
     refresh,
     paymentsByBookingId,
-    attentionItems,
-    todayMetrics,
-    financialSnapshot,
-    activityFeed,
-    analytics
+    todayMetrics
   } = useOverviewData(propertyFilter);
 
   // Payment recording modal state
@@ -70,13 +62,6 @@ export default function OverviewPage() {
     });
   };
 
-  const handleAttentionRecordPayment = (item: AttentionItem) => {
-    setPaymentModalData({
-      booking: item.booking,
-      balanceDue: item.dueAmount
-    });
-  };
-
   // Skeleton Loading State
   if (loading) {
     return (
@@ -93,12 +78,6 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* Action Skeleton */}
-        <div className="space-y-2">
-          <div className="h-4 w-28 bg-stone-200 rounded-md" />
-          <div className="h-20 rounded-xl border border-[#D8D2C5] bg-white" />
-        </div>
-
         {/* Today Skeleton */}
         <div className="space-y-2">
           <div className="h-4 w-40 bg-stone-200 rounded-md" />
@@ -109,12 +88,6 @@ export default function OverviewPage() {
         <div className="space-y-2">
           <div className="h-4 w-36 bg-stone-200 rounded-md" />
           <div className="h-32 rounded-xl border border-[#D8D2C5] bg-white" />
-        </div>
-
-        {/* Lower Grid Skeleton */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-72 rounded-xl border border-[#D8D2C5] bg-white" />
-          <div className="lg:col-span-1 h-72 rounded-xl border border-[#D8D2C5] bg-white" />
         </div>
       </div>
     );
@@ -143,13 +116,7 @@ export default function OverviewPage() {
       {/* 1. HEADER */}
       <OverviewHeader onNewBooking={() => navigate('/bookings/new')} />
 
-      {/* 2. NEEDS ACTION (Exception Queue Only) */}
-      <NeedsActionSection
-        items={attentionItems}
-        onRecordPayment={handleAttentionRecordPayment}
-      />
-
-      {/* 3. TODAY (Primary Operational Workspace) */}
+      {/* 2. TODAY (Primary Operational Workspace) */}
       <TodaySection
         metrics={todayMetrics}
         paymentsByBookingId={paymentsByBookingId}
@@ -158,22 +125,11 @@ export default function OverviewPage() {
         onRecordPayment={handleRecordPayment}
       />
 
-      {/* 4. CURRENTLY IN-HOUSE (Reference Stays) */}
+      {/* 3. CURRENTLY IN-HOUSE (Reference Stays) */}
       <InHouseSection
         inHouse={todayMetrics.inHouse}
         paymentsByBookingId={paymentsByBookingId}
       />
-
-      {/* 5. MONEY & 6. RECENT ACTIVITY */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <div className="lg:col-span-2">
-          <MoneySummary data={financialSnapshot} analytics={analytics} />
-        </div>
-
-        <div className="lg:col-span-1">
-          <ActivityList events={activityFeed} />
-        </div>
-      </div>
 
       {/* Add Payment Modal */}
       {paymentModalData && (

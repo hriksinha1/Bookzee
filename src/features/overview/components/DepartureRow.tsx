@@ -52,7 +52,7 @@ export default function DepartureRow({
       <div className="flex items-center justify-between sm:justify-end gap-3.5 shrink-0 pt-1 sm:pt-0">
         <div className="text-left sm:text-right">
           <div className="text-xs font-semibold text-[#1A2B28]">
-            {fmtINR(booking.grand_total)}
+            {fmtINR(booking.grand_total)}{hasDue ? ' total' : ''}
           </div>
           <div className="text-[11px] font-medium">
             {hasDue ? (

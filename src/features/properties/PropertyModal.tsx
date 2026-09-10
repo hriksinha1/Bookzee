@@ -66,7 +66,7 @@ export default function PropertyModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-[#1A2B28]">
-                {property ? 'Edit Property Details' : 'Add New Property / Homestay'}
+                Edit Property
               </h2>
               <p className="text-xs text-[#5C6E6B]">
                 Configure operational property details, house rules, and check-in policies

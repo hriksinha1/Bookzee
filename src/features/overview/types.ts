@@ -1,16 +1,4 @@
-import { Booking, Payment, Property, Customer } from '../../lib/repository/types';
-
-export interface AttentionItem {
-  id: string;
-  booking: Booking;
-  guestName: string;
-  propertyName: string;
-  roomName: string;
-  dueAmount: number;
-  reason: string;
-  type: 'checkout_due' | 'arrival_unpaid' | 'overdue_settlement' | 'late_checkout';
-  isTodayCheckout: boolean;
-}
+import { Booking } from '../../lib/repository/types';
 
 export interface TodayMetrics {
   arrivalsCount: number;
@@ -19,38 +7,4 @@ export interface TodayMetrics {
   arrivals: Booking[];
   departures: Booking[];
   inHouse: Booking[];
-}
-
-export interface FinancialSnapshotData {
-  bookingValue: number;
-  collected: number;
-  outstanding: number;
-}
-
-export interface ActivityEvent {
-  id: string;
-  title: string;
-  subtitle: string;
-  time: string;
-  type: 'payment' | 'booking' | 'refund';
-  amount?: number;
-}
-
-export interface AnalyticsPoint {
-  date: string;
-  bookingValue: number;
-  collected: number;
-}
-
-export interface OverviewAnalytics {
-  range: {
-    start: string;
-    end: string;
-  };
-  points: AnalyticsPoint[];
-  totals: {
-    bookingValue: number;
-    collected: number;
-    outstanding: number;
-  };
 }

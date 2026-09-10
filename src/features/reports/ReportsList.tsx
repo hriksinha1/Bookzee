@@ -208,24 +208,18 @@ export default function ReportsList() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#0D5C56]" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#0D5C56]">
-              Business Analytics
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] mt-1 tracking-tight">
-            Hospitality Reports
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] tracking-tight">
+            Reports
           </h1>
-          <p className="text-sm text-[#5C6E6B] mt-0.5">
-            Revenue trends, occupancy night statistics, and channel payment distribution.
+          <p className="text-sm text-[#5C6E6B] mt-1">
+            Monthly revenue, occupancy, and collection reports.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleExportCSV}
-            className="btn btn-primary text-xs sm:text-sm flex items-center gap-2"
+            className="px-3.5 py-2 rounded-lg bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors flex items-center gap-2 shadow-2xs"
           >
             <Download size={15} />
             <span>Export CSV Summary</span>

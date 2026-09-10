@@ -8,9 +8,9 @@ import BookingsList from './features/bookings/BookingsList';
 import BookingDetail from './features/bookings/BookingDetail';
 import NewBooking from './features/bookings/NewBooking';
 import CustomersList from './features/customers/CustomersList';
+import GuestProfile from './features/customers/GuestProfile';
 import PropertiesList from './features/properties/PropertiesList';
 import PaymentsList from './features/payments/PaymentsList';
-import OutstandingPayments from './features/payments/OutstandingPayments';
 import ReportsList from './features/reports/ReportsList';
 import Settings from './features/settings/Settings';
 import { ToastProvider } from './context/ToastContext';
@@ -46,8 +46,8 @@ export default function App() {
             <Route path="bookings/new" element={<NewBooking />} />
             <Route path="bookings/:id" element={<BookingDetail />} />
             <Route path="payments" element={<PaymentsList />} />
-            <Route path="outstanding" element={<OutstandingPayments />} />
             <Route path="guests" element={<CustomersList />} />
+            <Route path="guests/:id" element={<GuestProfile />} />
             <Route path="customers" element={<Navigate to="/guests" replace />} />
             <Route path="properties" element={<PropertiesList />} />
             <Route path="reports" element={<ReportsList />} />

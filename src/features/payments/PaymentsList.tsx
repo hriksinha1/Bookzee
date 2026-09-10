@@ -11,7 +11,6 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   CheckCircle2,
-  AlertCircle,
   FileText,
   Calendar,
   Building2
@@ -164,27 +163,13 @@ export default function PaymentsList() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#0D5C56]" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#0D5C56]">
-              Financial Ledger
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] mt-1 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] tracking-tight">
             Payments
           </h1>
-          <p className="text-sm text-[#5C6E6B] mt-0.5">
-            Complete transaction record of guest collections, advance deposits, and refunds.
+          <p className="text-sm text-[#5C6E6B] mt-1">
+            Record and review payments across your bookings.
           </p>
         </div>
-
-        <Link
-          to="/outstanding"
-          className="btn btn-outline text-xs sm:text-sm flex items-center gap-2 bg-white"
-        >
-          <AlertCircle size={15} className="text-[#C45532]" />
-          <span>View Outstanding Balances</span>
-        </Link>
       </div>
 
       {/* Summary Metrics Strip */}

@@ -11,6 +11,7 @@ import {
 } from '../../lib/services/pdfGenerator';
 import {
   ArrowLeft,
+  ArrowRight,
   Calendar,
   Building2,
   User,
@@ -496,13 +497,27 @@ export default function BookingDetail() {
 
           {/* Guest Profile Details */}
           <div className="card p-5 bg-white border-[#D8D2C5] space-y-4">
-            <div className="border-b border-[#EAE5DC] pb-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0D5C56]">
-                Guest Profile
-              </span>
-              <h3 className="text-base font-bold text-[#1A2B28] mt-0.5">
-                {booking.customer?.name}
-              </h3>
+            <div className="border-b border-[#EAE5DC] pb-3 flex items-start justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0D5C56]">
+                  Guest Profile
+                </span>
+                <h3 className="text-base font-bold text-[#1A2B28] mt-0.5">
+                  <Link
+                    to={`/guests/${booking.customer_id}`}
+                    className="hover:text-[#0D5C56] hover:underline inline-flex items-center gap-1.5 transition-colors"
+                  >
+                    <span>{booking.customer?.name}</span>
+                    <ArrowRight size={13} className="text-[#0D5C56]" />
+                  </Link>
+                </h3>
+              </div>
+              <Link
+                to={`/guests/${booking.customer_id}`}
+                className="text-xs font-medium text-[#0D5C56] hover:underline"
+              >
+                View profile →
+              </Link>
             </div>
 
             <div className="space-y-3 text-xs">
