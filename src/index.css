@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #0F766E;
+  --color-brand-primary-hover: #115E59;
+  --color-brand-dark: #0B3F3A;
+  --color-brand-deep: #062825;
+  --color-brand-light: #E6F3F1;
+
+  --color-brand-secondary: #155E75;
+  --color-brand-secondary-light: #E6F2F5;
+
+  --color-brand-accent: #C65D3A;
+  --color-brand-accent-hover: #A94A29;
+  --color-brand-accent-light: #FBEFEA;
+
+  --color-brand-sand: #F4EBDD;
+  --color-brand-sand-muted: #EAE1D1;
+
+  --color-page-bg: #F7F5F0;
+  --color-surface: #FFFFFF;
+  --color-surface-dim: #F7F5F0;
+  --color-surface-muted: #F2EFEA;
+  --color-surface-subtle: #FAF8F5;
+
+  --color-text-main: #18312F;
+  --color-text-secondary: #5F716E;
+  --color-text-tertiary: #8B9B97;
+
+  --color-border-subtle: #E8ECE9;
+  --color-border-main: #D4DED9;
+  --color-border-strong: #BDCCC6;
+
+  --color-success: #2F7D5A;
+  --color-success-bg: #EAF5EE;
+  --color-warning: #B7791F;
+  --color-warning-bg: #FDF5E8;
+  --color-danger: #B84A4A;
+  --color-danger-bg: #FDF0F0;
+  --color-info: #3478A6;
+  --color-info-bg: #EEF6FB;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: #F7F5F0;
+    color: #18312F;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom Scrollbar for sleek hotel panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4DED9;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #BDCCC6;
+}
+
+/* Base Utility Classes tailored to boutique hospitality */
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid #DCE4E1;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(15, 35, 30, 0.03);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+.btn:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #0F766E;
+  color: #FFFFFF;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: #115E59;
+}
+
+.btn-accent {
+  background-color: #C65D3A;
+  color: #FFFFFF;
+}
+.btn-accent:hover:not(:disabled) {
+  background-color: #A94A29;
+}
+
+.btn-outline {
+  background-color: #FFFFFF;
+  border: 1px solid #D4DED9;
+  color: #18312F;
+}
+.btn-outline:hover:not(:disabled) {
+  background-color: #F7F5F0;
+  border-color: #BDCCC6;
+}
+
+.input {
+  width: 100%;
+  padding: 0.55rem 0.875rem;
+  font-size: 0.875rem;
+  background-color: #FFFFFF;
+  border: 1px solid #D4DED9;
+  border-radius: 10px;
+  color: #18312F;
+  transition: border-color 0.15s ease;
+}
+.input:focus {
+  outline: none;
+  border-color: #0F766E;
+  box-shadow: 0 0 0 1px #0F766E;
+}
+
+.select {
+  width: 100%;
+  padding: 0.55rem 0.875rem;
+  font-size: 0.875rem;
+  background-color: #FFFFFF;
+  border: 1px solid #D4DED9;
+  border-radius: 10px;
+  color: #18312F;
+  transition: border-color 0.15s ease;
+}
+.select:focus {
+  outline: none;
+  border-color: #0F766E;
+  box-shadow: 0 0 0 1px #0F766E;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media print {
+  .no-print { display: none !important; }
+}
