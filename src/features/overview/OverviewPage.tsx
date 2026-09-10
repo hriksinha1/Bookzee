@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { useOutletContext, useNavigate, Link } from 'react-router-dom';
-import { Calendar as CalendarIcon, Plus, AlertCircle, RefreshCw } from 'lucide-react';
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import { AppContextType } from '../../components/layout/AppShell';
 import { useOverviewData } from './hooks/useOverviewData';
-import AttentionQueue from './components/AttentionQueue';
-import TodaySummary from './components/TodaySummary';
-import ArrivalsList from './components/ArrivalsList';
-import DeparturesList from './components/DeparturesList';
-import InHouseList from './components/InHouseList';
-import FinancialSnapshot from './components/FinancialSnapshot';
+import OverviewHeader from './components/OverviewHeader';
+import NeedsActionSection from './components/NeedsActionSection';
+import TodaySection from './components/TodaySection';
+import InHouseSection from './components/InHouseSection';
+import MoneySummary from './components/MoneySummary';
 import ActivityList from './components/ActivityList';
 import AddPaymentModal from '../bookings/AddPaymentModal';
 import { Booking } from '../../lib/repository/types';
@@ -38,20 +37,12 @@ export default function OverviewPage() {
     balanceDue: number;
   } | null>(null);
 
-  // Format today date calmly
-  const todayFormatted = new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
-  }).format(new Date());
-
   // Quick check-in handler
   const handleCheckIn = async (booking: Booking, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
       await repository.updateBooking(booking.id, { booking_status: 'Checked In' });
-      toast.success('Guest Checked In', `${booking.customer?.name || 'Guest'} marked as checked in.`);
+      toast.success('Guest Checked In', `${booking.customer?.name || 'Guest'} checked in.`);
       refresh();
     } catch {
       toast.error('Check-in Failed', 'Could not update booking status.');
@@ -63,14 +54,14 @@ export default function OverviewPage() {
     e.stopPropagation();
     try {
       await repository.updateBooking(booking.id, { booking_status: 'Checked Out' });
-      toast.success('Guest Checked Out', `${booking.customer?.name || 'Guest'} marked as checked out.`);
+      toast.success('Guest Checked Out', `${booking.customer?.name || 'Guest'} checked out.`);
       refresh();
     } catch {
       toast.error('Check-out Failed', 'Could not update booking status.');
     }
   };
 
-  // Record payment trigger
+  // Record payment triggers
   const handleRecordPayment = (booking: Booking, dueAmount: number) => {
     setPaymentModalData({
       booking,
@@ -85,28 +76,53 @@ export default function OverviewPage() {
     });
   };
 
+  // Skeleton Loading State
   if (loading) {
     return (
-      <div className="space-y-6 max-w-6xl mx-auto animate-pulse">
-        <div className="h-12 w-64 bg-stone-200/80 rounded-xl" />
-        <div className="h-24 bg-white rounded-xl border border-[#D8D2C5]" />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="h-64 bg-white rounded-xl border border-[#D8D2C5]" />
-          <div className="h-64 bg-white rounded-xl border border-[#D8D2C5]" />
+      <div className="space-y-6 max-w-5xl mx-auto pb-10 animate-pulse">
+        {/* Header Skeleton */}
+        <div className="flex justify-between items-baseline pb-2 border-b border-[#EAE5DC]">
+          <div className="space-y-1.5">
+            <div className="h-7 w-32 bg-stone-200 rounded-lg" />
+            <div className="h-4 w-56 bg-stone-200/70 rounded-md" />
+          </div>
+          <div className="flex gap-2">
+            <div className="h-8 w-24 bg-stone-200 rounded-lg" />
+            <div className="h-8 w-28 bg-stone-200 rounded-lg" />
+          </div>
+        </div>
+
+        {/* Action Skeleton */}
+        <div className="space-y-2">
+          <div className="h-4 w-28 bg-stone-200 rounded-md" />
+          <div className="h-16 rounded-xl border border-[#D8D2C5] bg-white" />
+        </div>
+
+        {/* Today Skeleton */}
+        <div className="space-y-2">
+          <div className="h-4 w-36 bg-stone-200 rounded-md" />
+          <div className="h-48 rounded-xl border border-[#D8D2C5] bg-white" />
+        </div>
+
+        {/* In-House Skeleton */}
+        <div className="space-y-2">
+          <div className="h-4 w-32 bg-stone-200 rounded-md" />
+          <div className="h-28 rounded-xl border border-[#D8D2C5] bg-white" />
         </div>
       </div>
     );
   }
 
+  // Error State
   if (error) {
     return (
-      <div className="max-w-md mx-auto my-16 p-6 rounded-xl border border-[#D8D2C5] bg-white text-center space-y-3">
+      <div className="max-w-md mx-auto my-20 p-6 rounded-xl border border-[#D8D2C5] bg-white text-center space-y-3 shadow-2xs">
         <AlertCircle size={28} className="mx-auto text-[#C45532]" />
-        <p className="text-sm font-semibold text-[#1A2B28]">{error}</p>
+        <p className="text-sm font-semibold text-[#1A2B28]">Couldn't load today's operations.</p>
         <button
           type="button"
           onClick={refresh}
-          className="px-4 py-2 rounded-lg bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors inline-flex items-center gap-1.5"
+          className="px-4 py-2 rounded-lg bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors inline-flex items-center gap-1.5 shadow-2xs"
         >
           <RefreshCw size={14} />
           <span>Retry</span>
@@ -116,76 +132,35 @@ export default function OverviewPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto pb-8">
-      {/* HEADER */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#EAE5DC]">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] tracking-tight">
-            Overview
-          </h1>
-          <p className="text-sm font-medium text-[#5C6E6B] mt-0.5">
-            {todayFormatted} · Your property's operational picture for today.
-          </p>
-        </div>
+    <div className="space-y-6 max-w-5xl mx-auto pb-10">
+      {/* 1. HEADER */}
+      <OverviewHeader onNewBooking={() => navigate('/bookings/new')} />
 
-        <div className="flex items-center gap-2.5">
-          <Link
-            to="/calendar"
-            className="px-3.5 py-2 rounded-xl border border-[#D8D2C5] text-xs font-medium text-[#1A2B28] bg-white hover:bg-[#FAF9F6] transition-colors flex items-center gap-1.5 shadow-2xs"
-          >
-            <CalendarIcon size={15} className="text-[#0D5C56]" />
-            <span>Calendar</span>
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => navigate('/bookings/new')}
-            className="px-4 py-2 rounded-xl bg-[#0D5C56] text-white text-xs font-medium hover:bg-[#094440] transition-colors flex items-center gap-1.5 shadow-2xs"
-          >
-            <Plus size={15} />
-            <span>New Booking</span>
-          </button>
-        </div>
-      </header>
-
-      {/* LEVEL 1: SECTION A — NEEDS ATTENTION */}
-      <AttentionQueue
+      {/* 2. NEEDS ACTION */}
+      <NeedsActionSection
         items={attentionItems}
         onRecordPayment={handleAttentionRecordPayment}
       />
 
-      {/* LEVEL 2: SECTION B — TODAY */}
-      <section className="space-y-4">
-        <TodaySummary metrics={todayMetrics} />
+      {/* 3. TODAY */}
+      <TodaySection
+        metrics={todayMetrics}
+        paymentsByBookingId={paymentsByBookingId}
+        onCheckIn={handleCheckIn}
+        onCheckOut={handleCheckOut}
+        onRecordPayment={handleRecordPayment}
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          {/* Arrivals List */}
-          <ArrivalsList
-            arrivals={todayMetrics.arrivals}
-            paymentsByBookingId={paymentsByBookingId}
-            onCheckIn={handleCheckIn}
-          />
-
-          {/* Departures List */}
-          <DeparturesList
-            departures={todayMetrics.departures}
-            paymentsByBookingId={paymentsByBookingId}
-            onCheckOut={handleCheckOut}
-            onRecordPayment={handleRecordPayment}
-          />
-        </div>
-      </section>
-
-      {/* LEVEL 3: SECTION C — CURRENTLY IN-HOUSE */}
-      <InHouseList
+      {/* 4. CURRENTLY IN-HOUSE */}
+      <InHouseSection
         inHouse={todayMetrics.inHouse}
         paymentsByBookingId={paymentsByBookingId}
       />
 
-      {/* LEVEL 4 & 5: FINANCIAL SNAPSHOT & RECENT ACTIVITY */}
+      {/* 5. MONEY & 6. RECENT ACTIVITY */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-2">
-          <FinancialSnapshot data={financialSnapshot} />
+          <MoneySummary data={financialSnapshot} />
         </div>
 
         <div className="lg:col-span-1">

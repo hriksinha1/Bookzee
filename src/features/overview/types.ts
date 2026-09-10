@@ -8,7 +8,7 @@ export interface AttentionItem {
   roomName: string;
   dueAmount: number;
   reason: string;
-  type: 'checkout_due' | 'arrival_unpaid' | 'overdue_settlement';
+  type: 'checkout_due' | 'arrival_unpaid' | 'overdue_settlement' | 'late_checkout';
   isTodayCheckout: boolean;
 }
 
