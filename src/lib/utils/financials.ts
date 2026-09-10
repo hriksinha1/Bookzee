@@ -2,6 +2,8 @@ import { Booking, Payment } from '../repository/types';
 
 export interface BookingFinancials {
   bookingTotal: number;
+  paid: number; // Net amount paid after refunds
+  refunded: number;
   totalPaid: number;
   totalRefunded: number;
   netPaid: number;
@@ -51,6 +53,8 @@ export function calculateBookingFinancials(
 
   return {
     bookingTotal,
+    paid: netPaid,
+    refunded: totalRefunded,
     totalPaid,
     totalRefunded,
     netPaid,

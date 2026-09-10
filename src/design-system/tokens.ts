@@ -1,53 +1,52 @@
 /**
- * MyTrackYo 2.0 Design Tokens
- * Hospitality-focused design system for boutique hotels and homestays.
+ * Bookzee Design System Tokens
+ * Hospitality-focused operational workspace for boutique hotels, resorts, and homestays.
  */
 
 export const colors = {
   brand: {
-    primary: '#0F766E', // Deep Teal / Peacock
-    primaryHover: '#115E59',
-    primaryDark: '#0B3F3A',
-    primaryDeep: '#062825',
-    primaryLight: '#E6F3F1',
-    secondary: '#155E75', // Deep Ocean / Petrol
-    secondaryLight: '#E6F2F5',
-    accent: '#C65D3A', // Warm Terracotta
-    accentHover: '#A94A29',
-    accentLight: '#FBEFEA',
-    sand: '#F4EBDD', // Soft Sand / Warm Cream
-    sandMuted: '#EAE1D1',
+    primary: '#0D5C56', // Deep Forest / Petrol Teal
+    primaryHover: '#094440',
+    primaryDark: '#073330',
+    primaryLight: '#E8F3F1',
+    secondary: '#164E63', // Deep Slate Cyan
+    secondaryLight: '#EAF3F6',
+    accent: '#C45532', // Warm Terracotta / Due Attention
+    accentHover: '#A84323',
+    accentLight: '#FAF0EB',
+    sand: '#F2E9DB', // Soft Linen Sand
+    sandMuted: '#E5DBCB',
   },
   surface: {
-    page: '#F7F5F0', // Very light warm stone
+    page: '#F8F7F4', // Warm stone linen canvas
     card: '#FFFFFF',
-    cardMuted: '#F4F2EC',
-    subtle: '#FAF8F5',
+    cardMuted: '#F3F0EA',
+    subtle: '#FAF9F6',
   },
   text: {
-    primary: '#18312F', // Deep warm charcoal/teal tint
-    secondary: '#5F716E',
-    tertiary: '#8B9B97',
+    primary: '#1A2B28', // Deepest charcoal with subtle pine undertone
+    secondary: '#5C6E6B', // Muted slate pine
+    tertiary: '#8E9E9B', // Soft caption
     inverted: '#FFFFFF',
   },
   border: {
-    subtle: '#E5EAE7',
-    main: '#D4DED9',
-    strong: '#BDCCC6',
+    subtle: '#EAE5DC',
+    main: '#D8D2C5',
+    strong: '#C2BBB0',
   },
   semantic: {
-    success: '#2F7D5A',
-    successBg: '#EAF5EE',
-    successBorder: '#BDE4CD',
+    success: '#276749',
+    successBg: '#EBF6EF',
+    successBorder: '#BDDFC9',
     warning: '#B7791F',
     warningBg: '#FDF5E8',
-    warningBorder: '#F6DBA9',
+    warningBorder: '#F5DCAD',
     danger: '#B84A4A',
     dangerBg: '#FDF0F0',
-    dangerBorder: '#F7C5C5',
-    info: '#3478A6',
-    infoBg: '#EEF6FB',
-    infoBorder: '#C1DFFA',
+    dangerBorder: '#F7C6C6',
+    info: '#2B6CB0',
+    infoBg: '#EEF6FC',
+    infoBorder: '#BEE3F8',
   }
 };
 
@@ -55,13 +54,14 @@ export const radii = {
   input: '10px',
   button: '10px',
   card: '14px',
-  dialog: '18px',
+  dialog: '16px',
   badge: '9999px',
 };
 
 export const shadows = {
-  subtle: '0 1px 3px rgba(15, 35, 30, 0.04), 0 1px 2px rgba(15, 35, 30, 0.02)',
-  card: '0 2px 6px -1px rgba(15, 35, 30, 0.05), 0 1px 4px -1px rgba(15, 35, 30, 0.03)',
-  raised: '0 10px 25px -5px rgba(15, 35, 30, 0.08), 0 8px 10px -6px rgba(15, 35, 30, 0.04)',
-  dialog: '0 20px 35px -10px rgba(15, 35, 30, 0.16), 0 10px 15px -5px rgba(15, 35, 30, 0.06)',
+  subtle: '0 1px 2px rgba(20, 35, 30, 0.04)',
+  card: '0 1px 3px rgba(20, 35, 30, 0.05), 0 1px 2px rgba(20, 35, 30, 0.03)',
+  raised: '0 4px 12px -2px rgba(20, 35, 30, 0.08), 0 2px 6px -1px rgba(20, 35, 30, 0.04)',
+  dialog: '0 16px 32px -8px rgba(20, 35, 30, 0.16), 0 8px 16px -4px rgba(20, 35, 30, 0.08)',
 };
+

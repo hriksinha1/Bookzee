@@ -1,52 +1,51 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-primary: #0F766E;
-  --color-brand-primary-hover: #115E59;
-  --color-brand-dark: #0B3F3A;
-  --color-brand-deep: #062825;
-  --color-brand-light: #E6F3F1;
+  --color-brand-primary: #0D5C56;
+  --color-brand-primary-hover: #094440;
+  --color-brand-dark: #073330;
+  --color-brand-light: #E8F3F1;
 
-  --color-brand-secondary: #155E75;
-  --color-brand-secondary-light: #E6F2F5;
+  --color-brand-secondary: #164E63;
+  --color-brand-secondary-light: #EAF3F6;
 
-  --color-brand-accent: #C65D3A;
-  --color-brand-accent-hover: #A94A29;
-  --color-brand-accent-light: #FBEFEA;
+  --color-brand-accent: #C45532;
+  --color-brand-accent-hover: #A84323;
+  --color-brand-accent-light: #FAF0EB;
 
-  --color-brand-sand: #F4EBDD;
-  --color-brand-sand-muted: #EAE1D1;
+  --color-brand-sand: #F2E9DB;
+  --color-brand-sand-muted: #E5DBCB;
 
-  --color-page-bg: #F7F5F0;
+  --color-page-bg: #F8F7F4;
   --color-surface: #FFFFFF;
-  --color-surface-dim: #F7F5F0;
-  --color-surface-muted: #F2EFEA;
-  --color-surface-subtle: #FAF8F5;
+  --color-surface-dim: #F8F7F4;
+  --color-surface-muted: #F3F0EA;
+  --color-surface-subtle: #FAF9F6;
 
-  --color-text-main: #18312F;
-  --color-text-secondary: #5F716E;
-  --color-text-tertiary: #8B9B97;
+  --color-text-main: #1A2B28;
+  --color-text-secondary: #5C6E6B;
+  --color-text-tertiary: #8E9E9B;
 
-  --color-border-subtle: #E8ECE9;
-  --color-border-main: #D4DED9;
-  --color-border-strong: #BDCCC6;
+  --color-border-subtle: #EAE5DC;
+  --color-border-main: #D8D2C5;
+  --color-border-strong: #C2BBB0;
 
-  --color-success: #2F7D5A;
-  --color-success-bg: #EAF5EE;
+  --color-success: #276749;
+  --color-success-bg: #EBF6EF;
   --color-warning: #B7791F;
   --color-warning-bg: #FDF5E8;
   --color-danger: #B84A4A;
   --color-danger-bg: #FDF0F0;
-  --color-info: #3478A6;
-  --color-info-bg: #EEF6FB;
+  --color-info: #2B6CB0;
+  --color-info-bg: #EEF6FC;
   
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer base {
   body {
-    background-color: #F7F5F0;
-    color: #18312F;
+    background-color: #F8F7F4;
+    color: #1A2B28;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -69,12 +68,12 @@
   background: #BDCCC6;
 }
 
-/* Base Utility Classes tailored to boutique hospitality */
+/* Base Utility Classes tailored to Bookzee hospitality workspace */
 .card {
   background-color: #FFFFFF;
-  border: 1px solid #DCE4E1;
+  border: 1px solid #D8D2C5;
   border-radius: 14px;
-  box-shadow: 0 1px 3px rgba(15, 35, 30, 0.03);
+  box-shadow: 0 1px 2px rgba(20, 35, 30, 0.03);
 }
 
 .btn {
@@ -98,29 +97,29 @@
 }
 
 .btn-primary {
-  background-color: #0F766E;
+  background-color: #0D5C56;
   color: #FFFFFF;
 }
 .btn-primary:hover:not(:disabled) {
-  background-color: #115E59;
+  background-color: #094440;
 }
 
 .btn-accent {
-  background-color: #C65D3A;
+  background-color: #C45532;
   color: #FFFFFF;
 }
 .btn-accent:hover:not(:disabled) {
-  background-color: #A94A29;
+  background-color: #A84323;
 }
 
 .btn-outline {
   background-color: #FFFFFF;
-  border: 1px solid #D4DED9;
-  color: #18312F;
+  border: 1px solid #D8D2C5;
+  color: #1A2B28;
 }
 .btn-outline:hover:not(:disabled) {
-  background-color: #F7F5F0;
-  border-color: #BDCCC6;
+  background-color: #F8F7F4;
+  border-color: #C2BBB0;
 }
 
 .input {
@@ -128,15 +127,15 @@
   padding: 0.55rem 0.875rem;
   font-size: 0.875rem;
   background-color: #FFFFFF;
-  border: 1px solid #D4DED9;
+  border: 1px solid #D8D2C5;
   border-radius: 10px;
-  color: #18312F;
+  color: #1A2B28;
   transition: border-color 0.15s ease;
 }
 .input:focus {
   outline: none;
-  border-color: #0F766E;
-  box-shadow: 0 0 0 1px #0F766E;
+  border-color: #0D5C56;
+  box-shadow: 0 0 0 1px #0D5C56;
 }
 
 .select {
@@ -144,15 +143,15 @@
   padding: 0.55rem 0.875rem;
   font-size: 0.875rem;
   background-color: #FFFFFF;
-  border: 1px solid #D4DED9;
+  border: 1px solid #D8D2C5;
   border-radius: 10px;
-  color: #18312F;
+  color: #1A2B28;
   transition: border-color 0.15s ease;
 }
 .select:focus {
   outline: none;
-  border-color: #0F766E;
-  box-shadow: 0 0 0 1px #0F766E;
+  border-color: #0D5C56;
+  box-shadow: 0 0 0 1px #0D5C56;
 }
 
 .badge {

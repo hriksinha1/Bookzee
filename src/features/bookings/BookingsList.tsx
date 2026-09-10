@@ -73,7 +73,7 @@ export default function BookingsList() {
         !q ||
         b.booking_no.toLowerCase().includes(q) ||
         b.customer?.name.toLowerCase().includes(q) ||
-        b.customer?.phone.toLowerCase().includes(q) ||
+        b.customer?.phone.includes(q) ||
         b.room_type.toLowerCase().includes(q) ||
         b.property?.name.toLowerCase().includes(q);
 
@@ -119,7 +119,7 @@ export default function BookingsList() {
       ).length,
       completed: bookings.filter(
         (b) => b.booking_status === 'Checked Out' || b.booking_status === 'Completed'
-      ).length,
+      ).length
     };
   }, [bookings, todayStr]);
 
@@ -127,8 +127,8 @@ export default function BookingsList() {
     return (
       <div className="animate-pulse space-y-6 max-w-7xl mx-auto">
         <div className="h-10 w-64 bg-stone-200 rounded-xl"></div>
-        <div className="h-12 bg-white rounded-2xl border border-[#D4DED9]"></div>
-        <div className="h-96 bg-white rounded-2xl border border-[#D4DED9]"></div>
+        <div className="h-12 bg-white rounded-2xl border border-[#D8D2C5]"></div>
+        <div className="h-96 bg-white rounded-2xl border border-[#D8D2C5]"></div>
       </div>
     );
   }
@@ -139,16 +139,16 @@ export default function BookingsList() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#0F766E]" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#0F766E]">
+            <span className="w-2 h-2 rounded-full bg-[#0D5C56]" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#0D5C56]">
               Guest Reservations
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#18312F] mt-1 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] mt-1 tracking-tight">
             Bookings
           </h1>
-          <p className="text-sm text-[#5F716E] mt-0.5">
-            Manage stays, guests, and payment status in one central registry.
+          <p className="text-sm text-[#5C6E6B] mt-0.5">
+            Manage stays, guests, arrivals, departures, and balance settlements.
           </p>
         </div>
 
@@ -161,14 +161,14 @@ export default function BookingsList() {
         </Link>
       </div>
 
-      {/* Quick Operational Tabs (Requirement #19) */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-medium border-b border-[#D4DED9]">
+      {/* Quick Operational Tabs (Requirements 10, 11) */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-medium border-b border-[#D8D2C5]">
         <button
           onClick={() => setActiveTab('all')}
           className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
             activeTab === 'all'
-              ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold shadow-2xs'
-              : 'text-[#5F716E] hover:bg-white'
+              ? 'bg-[#E8F3F1] text-[#0D5C56] font-bold shadow-2xs border border-[#BDDFC9]'
+              : 'text-[#5C6E6B] hover:bg-white'
           }`}
         >
           All Stays ({counts.all})
@@ -177,8 +177,8 @@ export default function BookingsList() {
           onClick={() => setActiveTab('arriving')}
           className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
             activeTab === 'arriving'
-              ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold shadow-2xs'
-              : 'text-[#5F716E] hover:bg-white'
+              ? 'bg-[#E8F3F1] text-[#0D5C56] font-bold shadow-2xs border border-[#BDDFC9]'
+              : 'text-[#5C6E6B] hover:bg-white'
           }`}
         >
           Arriving Today ({counts.arriving})
@@ -187,8 +187,8 @@ export default function BookingsList() {
           onClick={() => setActiveTab('staying')}
           className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
             activeTab === 'staying'
-              ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold shadow-2xs'
-              : 'text-[#5F716E] hover:bg-white'
+              ? 'bg-[#E8F3F1] text-[#0D5C56] font-bold shadow-2xs border border-[#BDDFC9]'
+              : 'text-[#5C6E6B] hover:bg-white'
           }`}
         >
           In-House ({counts.staying})
@@ -197,8 +197,8 @@ export default function BookingsList() {
           onClick={() => setActiveTab('departing')}
           className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
             activeTab === 'departing'
-              ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold shadow-2xs'
-              : 'text-[#5F716E] hover:bg-white'
+              ? 'bg-[#E8F3F1] text-[#0D5C56] font-bold shadow-2xs border border-[#BDDFC9]'
+              : 'text-[#5C6E6B] hover:bg-white'
           }`}
         >
           Departing Today ({counts.departing})
@@ -207,8 +207,8 @@ export default function BookingsList() {
           onClick={() => setActiveTab('completed')}
           className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
             activeTab === 'completed'
-              ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold shadow-2xs'
-              : 'text-[#5F716E] hover:bg-white'
+              ? 'bg-[#E8F3F1] text-[#0D5C56] font-bold shadow-2xs border border-[#BDDFC9]'
+              : 'text-[#5C6E6B] hover:bg-white'
           }`}
         >
           Past Stays ({counts.completed})
@@ -216,30 +216,30 @@ export default function BookingsList() {
       </div>
 
       {/* Search & Secondary Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-[#D4DED9]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-[#D8D2C5]">
         <div className="relative w-full sm:max-w-md">
           <Search
             size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8B9B97] pointer-events-none"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#5C6E6B] pointer-events-none"
           />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by guest name, phone, booking ID, room type..."
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-[#FAF8F5] border border-[#E8ECE9] rounded-xl outline-none focus:border-[#0F766E] text-[#18312F] placeholder:text-[#8B9B97]"
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-[#FAF9F6] border border-[#EAE5DC] rounded-xl outline-none focus:border-[#0D5C56] text-[#1A2B28] placeholder:text-[#5C6E6B]"
           />
         </div>
 
         {/* Payment status filter */}
         <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-          <span className="text-xs text-[#5F716E] flex items-center gap-1">
+          <span className="text-xs text-[#5C6E6B] flex items-center gap-1">
             <Filter size={13} /> Payment:
           </span>
           <select
             value={paymentFilter}
             onChange={(e) => setPaymentFilter(e.target.value)}
-            className="text-xs bg-[#FAF8F5] border border-[#E8ECE9] rounded-xl px-3 py-1.5 font-medium text-[#18312F] outline-none cursor-pointer"
+            className="text-xs bg-[#FAF9F6] border border-[#EAE5DC] rounded-xl px-3 py-1.5 font-medium text-[#1A2B28] outline-none cursor-pointer focus:border-[#0D5C56]"
           >
             <option value="all">All Statuses</option>
             <option value="Paid">Paid in Full</option>
@@ -249,15 +249,15 @@ export default function BookingsList() {
         </div>
       </div>
 
-      {/* Bookings View: Desktop Table + Mobile Cards (Requirement #38) */}
-      <div className="card overflow-hidden bg-white border-[#D4DED9]">
+      {/* Bookings View: Desktop Table + Mobile Cards */}
+      <div className="card overflow-hidden bg-white border-[#D8D2C5]">
         {filteredBookings.length === 0 ? (
           <div className="py-16 px-6 text-center space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-[#E6F3F1] text-[#0F766E] mx-auto flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-[#E8F3F1] text-[#0D5C56] mx-auto flex items-center justify-center">
               <CalendarDays size={24} />
             </div>
-            <h3 className="text-base font-semibold text-[#18312F]">No bookings match your filter</h3>
-            <p className="text-xs text-[#5F716E] max-w-sm mx-auto">
+            <h3 className="text-base font-semibold text-[#1A2B28]">No bookings match your filter</h3>
+            <p className="text-xs text-[#5C6E6B] max-w-sm mx-auto">
               Create a new guest booking to start tracking arrivals, departures, and balance
               settlements.
             </p>
@@ -271,7 +271,7 @@ export default function BookingsList() {
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-[#E8ECE9] bg-[#FAF8F5] text-xs font-semibold text-[#5F716E] uppercase tracking-wider">
+                  <tr className="border-b border-[#EAE5DC] bg-[#FAF9F6] text-xs font-semibold text-[#5C6E6B] uppercase tracking-wider">
                     <th className="py-3 px-4">Guest</th>
                     <th className="py-3 px-4">Property</th>
                     <th className="py-3 px-4">Stay Dates</th>
@@ -283,7 +283,7 @@ export default function BookingsList() {
                     <th className="py-3 px-4 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E8ECE9]">
+                <tbody className="divide-y divide-[#EAE5DC]">
                   {filteredBookings.map((b) => {
                     const bPayments = paymentsByBooking.get(b.id) || [];
                     const fin = calculateBookingFinancials(b, bPayments);
@@ -292,48 +292,48 @@ export default function BookingsList() {
                       <tr
                         key={b.id}
                         onClick={() => navigate(`/bookings/${b.id}`)}
-                        className="hover:bg-[#FAF8F5] cursor-pointer transition-colors group"
+                        className="hover:bg-[#FAF9F6] cursor-pointer transition-colors group"
                       >
                         {/* Guest */}
                         <td className="py-3.5 px-4">
-                          <div className="font-semibold text-[#18312F] group-hover:text-[#0F766E] transition-colors">
+                          <div className="font-semibold text-[#1A2B28] group-hover:text-[#0D5C56] transition-colors">
                             {b.customer?.name || 'Guest'}
                           </div>
-                          <div className="text-xs text-[#8B9B97] font-mono">{b.booking_no}</div>
+                          <div className="text-xs text-[#5C6E6B] font-mono">{b.booking_no}</div>
                         </td>
 
                         {/* Property */}
-                        <td className="py-3.5 px-4 text-xs text-[#5F716E]">
-                          <div className="font-medium text-[#18312F] truncate max-w-[160px]">
+                        <td className="py-3.5 px-4 text-xs text-[#5C6E6B]">
+                          <div className="font-medium text-[#1A2B28] truncate max-w-[160px]">
                             {b.property?.name}
                           </div>
-                          <div className="text-[11px] text-[#8B9B97]">{b.room_type}</div>
+                          <div className="text-[11px] text-[#5C6E6B]">{b.room_type}</div>
                         </td>
 
                         {/* Stay Dates */}
-                        <td className="py-3.5 px-4 text-xs text-[#18312F]">
+                        <td className="py-3.5 px-4 text-xs text-[#1A2B28]">
                           <div>
                             {fmtDate(b.check_in)} – {fmtDate(b.check_out)}
                           </div>
-                          <div className="text-[11px] text-[#8B9B97]">
+                          <div className="text-[11px] text-[#5C6E6B]">
                             {b.nights} {b.nights === 1 ? 'night' : 'nights'} • {b.guests} guests
                           </div>
                         </td>
 
                         {/* Financials */}
-                        <td className="py-3.5 px-4 text-right font-semibold text-[#18312F] text-xs">
+                        <td className="py-3.5 px-4 text-right font-semibold text-[#1A2B28] text-xs">
                           {fmtINR(fin.bookingTotal)}
                         </td>
-                        <td className="py-3.5 px-4 text-right font-medium text-[#2F7D5A] text-xs">
+                        <td className="py-3.5 px-4 text-right font-medium text-[#276749] text-xs">
                           {fmtINR(fin.netPaid)}
                         </td>
                         <td className="py-3.5 px-4 text-right text-xs">
                           {fin.amountDue > 0 ? (
-                            <span className="font-semibold text-[#B7791F]">
+                            <span className="font-semibold text-[#C45532]">
                               {fmtINR(fin.amountDue)}
                             </span>
                           ) : (
-                            <span className="text-[#2F7D5A] font-medium">₹0</span>
+                            <span className="text-[#276749] font-medium">₹0</span>
                           )}
                         </td>
 
@@ -342,10 +342,10 @@ export default function BookingsList() {
                           <span
                             className={`badge ${
                               b.booking_status === 'Checked In'
-                                ? 'bg-[#EAF5EE] text-[#2F7D5A] border border-[#BDE4CD]'
+                                ? 'bg-[#EBF6EF] text-[#276749] border border-[#BDDFC9]'
                                 : b.booking_status === 'Checked Out'
                                 ? 'bg-stone-100 text-stone-600 border border-stone-200'
-                                : 'bg-[#E6F3F1] text-[#0F766E] border border-[#BDE4CD]'
+                                : 'bg-[#E8F3F1] text-[#0D5C56] border border-[#BDDFC9]'
                             }`}
                           >
                             {b.booking_status}
@@ -357,10 +357,10 @@ export default function BookingsList() {
                           <span
                             className={`badge ${
                               fin.paymentStatus === 'Paid'
-                                ? 'bg-[#EAF5EE] text-[#2F7D5A] border border-[#BDE4CD]'
+                                ? 'bg-[#EBF6EF] text-[#276749] border border-[#BDDFC9]'
                                 : fin.paymentStatus === 'Partially Paid'
-                                ? 'bg-[#FDF5E8] text-[#B7791F] border border-[#F6DBA9]'
-                                : 'bg-[#FDF0F0] text-[#B84A4A] border border-[#F7C5C5]'
+                                ? 'bg-[#FAF0EB] text-[#C45532] border border-[#F5DCAD]'
+                                : 'bg-rose-50 text-rose-700 border border-rose-200'
                             }`}
                           >
                             {fin.paymentStatus}
@@ -369,7 +369,7 @@ export default function BookingsList() {
 
                         {/* Action */}
                         <td className="py-3.5 px-4 text-right">
-                          <button className="text-xs font-semibold text-[#0F766E] group-hover:underline inline-flex items-center gap-1">
+                          <button className="text-xs font-semibold text-[#0D5C56] group-hover:underline inline-flex items-center gap-1">
                             <span>Details</span>
                             <ArrowRight size={13} />
                           </button>
@@ -382,7 +382,7 @@ export default function BookingsList() {
             </div>
 
             {/* Mobile Stacked Cards */}
-            <div className="md:hidden divide-y divide-[#E8ECE9]">
+            <div className="md:hidden divide-y divide-[#EAE5DC]">
               {filteredBookings.map((b) => {
                 const bPayments = paymentsByBooking.get(b.id) || [];
                 const fin = calculateBookingFinancials(b, bPayments);
@@ -391,21 +391,21 @@ export default function BookingsList() {
                   <div
                     key={b.id}
                     onClick={() => navigate(`/bookings/${b.id}`)}
-                    className="p-4 space-y-2.5 active:bg-[#FAF8F5] transition-colors"
+                    className="p-4 space-y-2.5 active:bg-[#FAF9F6] transition-colors"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <div className="font-semibold text-[#18312F] text-base">
+                        <div className="font-semibold text-[#1A2B28] text-base">
                           {b.customer?.name || 'Guest'}
                         </div>
-                        <div className="text-xs text-[#8B9B97] font-mono">{b.booking_no}</div>
+                        <div className="text-xs text-[#5C6E6B] font-mono">{b.booking_no}</div>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span
                           className={`badge ${
                             b.booking_status === 'Checked In'
-                              ? 'bg-[#EAF5EE] text-[#2F7D5A]'
-                              : 'bg-[#E6F3F1] text-[#0F766E]'
+                              ? 'bg-[#EBF6EF] text-[#276749]'
+                              : 'bg-[#E8F3F1] text-[#0D5C56]'
                           }`}
                         >
                           {b.booking_status}
@@ -413,8 +413,8 @@ export default function BookingsList() {
                         <span
                           className={`badge ${
                             fin.paymentStatus === 'Paid'
-                              ? 'bg-[#EAF5EE] text-[#2F7D5A]'
-                              : 'bg-[#FDF5E8] text-[#B7791F]'
+                              ? 'bg-[#EBF6EF] text-[#276749]'
+                              : 'bg-[#FAF0EB] text-[#C45532]'
                           }`}
                         >
                           {fin.paymentStatus}
@@ -422,19 +422,19 @@ export default function BookingsList() {
                       </div>
                     </div>
 
-                    <div className="text-xs text-[#5F716E]">
+                    <div className="text-xs text-[#5C6E6B]">
                       {b.property?.name} • {b.room_type}
                     </div>
 
-                    <div className="text-xs text-[#18312F] flex items-center justify-between pt-2 border-t border-[#E8ECE9]">
+                    <div className="text-xs text-[#1A2B28] flex items-center justify-between pt-2 border-t border-[#EAE5DC]">
                       <div>
                         {fmtDate(b.check_in)} – {fmtDate(b.check_out)}
-                        <span className="text-[#8B9B97] ml-1">({b.nights}n)</span>
+                        <span className="text-[#5C6E6B] ml-1">({b.nights}n)</span>
                       </div>
                       <div className="text-right">
                         <span className="font-bold">{fmtINR(fin.bookingTotal)}</span>
                         {fin.amountDue > 0 && (
-                          <div className="text-[11px] text-[#B7791F] font-semibold">
+                          <div className="text-[11px] text-[#C45532] font-semibold">
                             Due: {fmtINR(fin.amountDue)}
                           </div>
                         )}

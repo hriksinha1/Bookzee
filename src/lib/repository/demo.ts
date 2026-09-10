@@ -733,6 +733,14 @@ class DemoRepositoryImpl implements IRepository {
     return cust;
   }
 
+  async updateCustomer(id: string, data: Partial<Customer>): Promise<Customer> {
+    const index = this.db.customers.findIndex(c => c.id === id);
+    if (index === -1) throw new Error('Customer not found');
+    this.db.customers[index] = { ...this.db.customers[index], ...data };
+    this.save();
+    return this.db.customers[index];
+  }
+
   // --- Bookings ---
   async getBookings(propertyId?: string): Promise<Booking[]> {
     let list = this.db.bookings;

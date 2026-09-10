@@ -24,6 +24,8 @@ export interface Customer {
   email?: string;
   id_type?: string;
   id_number?: string;
+  city?: string;
+  address?: string;
   notes?: string;
   created_at: string;
 }

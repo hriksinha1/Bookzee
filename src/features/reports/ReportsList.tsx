@@ -27,8 +27,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-  Legend
+  ResponsiveContainer
 } from 'recharts';
 import { Booking, Payment, Property } from '../../lib/repository/types';
 import { useToast } from '../../context/ToastContext';
@@ -41,7 +40,6 @@ export default function ReportsList() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState<'30d' | '90d' | 'year' | 'all'>('all');
 
   useEffect(() => {
     async function load() {
@@ -183,14 +181,14 @@ export default function ReportsList() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `MyTrackYo_Hospitality_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `Bookzee_Hospitality_Report_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     toast.success('CSV Exported', 'Hospitality performance report downloaded.');
   }
 
-  const PALETTE = ['#0F766E', '#C65D3A', '#2F7D5A', '#B7791F', '#155E75'];
+  const PALETTE = ['#0D5C56', '#C45532', '#276749', '#D97706', '#0284C7'];
 
   if (loading) {
     return (
@@ -198,7 +196,7 @@ export default function ReportsList() {
         <div className="h-10 w-64 bg-stone-200 rounded-xl"></div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="h-28 bg-white rounded-2xl border border-[#D4DED9]"></div>
+            <div key={n} className="h-28 bg-white rounded-2xl border border-[#D8D2C5]"></div>
           ))}
         </div>
       </div>
@@ -211,15 +209,15 @@ export default function ReportsList() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#0F766E]" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#0F766E]">
+            <span className="w-2 h-2 rounded-full bg-[#0D5C56]" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#0D5C56]">
               Business Analytics
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#18312F] mt-1 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] mt-1 tracking-tight">
             Hospitality Reports
           </h1>
-          <p className="text-sm text-[#5F716E] mt-0.5">
+          <p className="text-sm text-[#5C6E6B] mt-0.5">
             Revenue trends, occupancy night statistics, and channel payment distribution.
           </p>
         </div>
@@ -235,72 +233,72 @@ export default function ReportsList() {
         </div>
       </div>
 
-      {/* Top 4 Performance Cards (Requirement #27) */}
+      {/* Top 4 Performance Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="card p-5 bg-white border-[#D4DED9]">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
+        <div className="card p-5 bg-white border-[#D8D2C5]">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#5C6E6B]">
             Gross Revenue
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-[#18312F] mt-1 tracking-tight">
+          <div className="text-2xl sm:text-3xl font-bold text-[#1A2B28] mt-1 tracking-tight">
             {fmtINR(totals.grossRevenue)}
           </div>
-          <div className="text-xs text-[#5F716E] mt-1">Confirmed guest tariffs</div>
+          <div className="text-xs text-[#5C6E6B] mt-1">Confirmed guest tariffs</div>
         </div>
 
-        <div className="card p-5 bg-white border-[#D4DED9]">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
+        <div className="card p-5 bg-white border-[#D8D2C5]">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#5C6E6B]">
             Collected Revenue
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-[#2F7D5A] mt-1 tracking-tight">
+          <div className="text-2xl sm:text-3xl font-bold text-[#276749] mt-1 tracking-tight">
             {fmtINR(totals.totalCollected)}
           </div>
-          <div className="text-xs text-[#5F716E] mt-1">
+          <div className="text-xs text-[#5C6E6B] mt-1">
             {totals.grossRevenue > 0
               ? `${Math.round((totals.totalCollected / totals.grossRevenue) * 100)}% collected`
               : '100%'}
           </div>
         </div>
 
-        <div className="card p-5 bg-white border-[#D4DED9]">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
+        <div className="card p-5 bg-white border-[#D8D2C5]">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#5C6E6B]">
             Outstanding Balance
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-[#B7791F] mt-1 tracking-tight">
+          <div className="text-2xl sm:text-3xl font-bold text-[#C45532] mt-1 tracking-tight">
             {fmtINR(totals.totalDue)}
           </div>
-          <div className="text-xs text-[#5F716E] mt-1">Awaiting guest settlement</div>
+          <div className="text-xs text-[#5C6E6B] mt-1">Awaiting guest settlement</div>
         </div>
 
-        <div className="card p-5 bg-white border-[#D4DED9]">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
+        <div className="card p-5 bg-white border-[#D8D2C5]">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#5C6E6B]">
             Total Room Nights
           </span>
-          <div className="text-2xl sm:text-3xl font-bold text-[#18312F] mt-1 tracking-tight">
+          <div className="text-2xl sm:text-3xl font-bold text-[#1A2B28] mt-1 tracking-tight">
             {totals.totalNights}
           </div>
-          <div className="text-xs text-[#5F716E] mt-1">Across {totals.bookingsCount} stays</div>
+          <div className="text-xs text-[#5C6E6B] mt-1">Across {totals.bookingsCount} stays</div>
         </div>
       </div>
 
       {/* Main Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Revenue & Collection Trend */}
-        <div className="lg:col-span-2 card p-6 bg-white border-[#D4DED9] space-y-4">
+        <div className="lg:col-span-2 card p-6 bg-white border-[#D8D2C5] space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-semibold text-[#18312F]">
+              <h3 className="text-base font-semibold text-[#1A2B28]">
                 Monthly Financial Progression
               </h3>
-              <p className="text-xs text-[#5F716E] mt-0.5">
+              <p className="text-xs text-[#5C6E6B] mt-0.5">
                 Gross revenue against actual bank collections
               </p>
             </div>
-            <div className="flex items-center gap-3 text-xs text-[#5F716E]">
+            <div className="flex items-center gap-3 text-xs text-[#5C6E6B]">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0F766E]" /> Revenue
+                <span className="w-2.5 h-2.5 rounded-full bg-[#0D5C56]" /> Revenue
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#C65D3A]" /> Collected
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C45532]" /> Collected
               </span>
             </div>
           </div>
@@ -310,18 +308,18 @@ export default function ReportsList() {
               <AreaChart data={monthlyTrend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRevRep" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0F766E" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#0F766E" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#0D5C56" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#0D5C56" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorColRep" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C65D3A" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#C65D3A" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#C45532" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#C45532" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E8ECE9" vertical={false} />
-                <XAxis dataKey="month" stroke="#8B9B97" fontSize={12} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#EAE5DC" vertical={false} />
+                <XAxis dataKey="month" stroke="#5C6E6B" fontSize={12} tickLine={false} />
                 <YAxis
-                  stroke="#8B9B97"
+                  stroke="#5C6E6B"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
@@ -332,14 +330,14 @@ export default function ReportsList() {
                   contentStyle={{
                     backgroundColor: '#FFFFFF',
                     borderRadius: '12px',
-                    borderColor: '#D4DED9'
+                    borderColor: '#D8D2C5'
                   }}
                 />
                 <Area
                   type="monotone"
                   dataKey="revenue"
                   name="Gross Revenue"
-                  stroke="#0F766E"
+                  stroke="#0D5C56"
                   strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#colorRevRep)"
@@ -348,7 +346,7 @@ export default function ReportsList() {
                   type="monotone"
                   dataKey="collected"
                   name="Collected"
-                  stroke="#C65D3A"
+                  stroke="#C45532"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorColRep)"
@@ -359,10 +357,10 @@ export default function ReportsList() {
         </div>
 
         {/* Right 1 Col: Payment Methods Breakdown */}
-        <div className="card p-6 bg-white border-[#D4DED9] space-y-4">
+        <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
           <div>
-            <h3 className="text-base font-semibold text-[#18312F]">Payment Channels</h3>
-            <p className="text-xs text-[#5F716E] mt-0.5">Distribution of collected funds</p>
+            <h3 className="text-base font-semibold text-[#1A2B28]">Payment Channels</h3>
+            <p className="text-xs text-[#5C6E6B] mt-0.5">Distribution of collected funds</p>
           </div>
 
           <div className="h-56 w-full">
@@ -386,24 +384,24 @@ export default function ReportsList() {
                   contentStyle={{
                     backgroundColor: '#FFFFFF',
                     borderRadius: '12px',
-                    borderColor: '#D4DED9'
+                    borderColor: '#D8D2C5'
                   }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="space-y-1.5 pt-2 border-t border-[#E8ECE9] text-xs">
+          <div className="space-y-1.5 pt-2 border-t border-[#EAE5DC] text-xs">
             {methodBreakdown.map((m, idx) => (
               <div key={m.name} className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-[#5F716E]">
+                <span className="flex items-center gap-1.5 text-[#5C6E6B]">
                   <span
                     className="w-2.5 h-2.5 rounded-full"
                     style={{ backgroundColor: PALETTE[idx % PALETTE.length] }}
                   />
                   {m.name}
                 </span>
-                <span className="font-semibold text-[#18312F]">{fmtINR(m.value)}</span>
+                <span className="font-semibold text-[#1A2B28]">{fmtINR(m.value)}</span>
               </div>
             ))}
           </div>
@@ -411,10 +409,10 @@ export default function ReportsList() {
       </div>
 
       {/* Property Revenue Bar Chart */}
-      <div className="card p-6 bg-white border-[#D4DED9] space-y-4">
+      <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
         <div>
-          <h3 className="text-base font-semibold text-[#18312F]">Revenue by Property</h3>
-          <p className="text-xs text-[#5F716E] mt-0.5">
+          <h3 className="text-base font-semibold text-[#1A2B28]">Revenue by Property</h3>
+          <p className="text-xs text-[#5C6E6B] mt-0.5">
             Contribution of each homestay / boutique hotel across the portfolio
           </p>
         </div>
@@ -422,10 +420,10 @@ export default function ReportsList() {
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={propertyBreakdown} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E8ECE9" vertical={false} />
-              <XAxis dataKey="name" stroke="#8B9B97" fontSize={12} tickLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#EAE5DC" vertical={false} />
+              <XAxis dataKey="name" stroke="#5C6E6B" fontSize={12} tickLine={false} />
               <YAxis
-                stroke="#8B9B97"
+                stroke="#5C6E6B"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
@@ -436,10 +434,10 @@ export default function ReportsList() {
                 contentStyle={{
                   backgroundColor: '#FFFFFF',
                   borderRadius: '12px',
-                  borderColor: '#D4DED9'
+                  borderColor: '#D8D2C5'
                 }}
               />
-              <Bar dataKey="revenue" fill="#0F766E" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="revenue" fill="#0D5C56" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -27,6 +27,7 @@ export default function PropertyModal({
     gstin: property?.gstin || '',
     check_in_time: property?.check_in_time || '14:00',
     check_out_time: property?.check_out_time || '11:00',
+    description: property?.description || '',
     active: property?.active ?? true
   });
 
@@ -56,32 +57,32 @@ export default function PropertyModal({
 
   return (
     <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl border border-[#D4DED9] w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95">
+      <div className="bg-white rounded-2xl shadow-2xl border border-[#D8D2C5] w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-[#E8ECE9] flex items-center justify-between bg-[#FAF8F5]">
+        <div className="px-6 py-4 border-b border-[#EAE5DC] flex items-center justify-between bg-[#FAF9F6]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#E6F3F1] text-[#0F766E] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#E8F3F1] text-[#0D5C56] flex items-center justify-center">
               <Building2 size={18} />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#18312F]">
+              <h2 className="text-base font-bold text-[#1A2B28]">
                 {property ? 'Edit Property Details' : 'Add New Property / Homestay'}
               </h2>
-              <p className="text-xs text-[#5F716E]">
-                Configure operational property details and tax registration
+              <p className="text-xs text-[#5C6E6B]">
+                Configure operational property details, house rules, and check-in policies
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-stone-400 hover:text-[#18312F] hover:bg-stone-100 transition-colors"
+            className="p-1 rounded-lg text-stone-400 hover:text-[#1A2B28] hover:bg-stone-100 transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Modal Form */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-5 text-xs">
+        <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-4 text-xs">
           {error && (
             <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700">
               {error}
@@ -90,7 +91,7 @@ export default function PropertyModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 Property / Homestay Name <span className="text-rose-500">*</span>
               </label>
               <input
@@ -103,7 +104,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 Property Type <span className="text-rose-500">*</span>
               </label>
               <select
@@ -121,7 +122,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 Location / Neighborhood <span className="text-rose-500">*</span>
               </label>
               <input
@@ -134,7 +135,7 @@ export default function PropertyModal({
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 Full Street Address <span className="text-rose-500">*</span>
               </label>
               <input
@@ -147,7 +148,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 City <span className="text-rose-500">*</span>
               </label>
               <input
@@ -160,7 +161,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 State <span className="text-rose-500">*</span>
               </label>
               <input
@@ -173,7 +174,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">Pincode</label>
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">Pincode</label>
               <input
                 className="input text-xs"
                 value={formData.pincode}
@@ -183,7 +184,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">GSTIN (Optional)</label>
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">GSTIN (Optional)</label>
               <input
                 className="input text-xs font-mono"
                 value={formData.gstin}
@@ -193,7 +194,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">Contact Phone</label>
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">Contact Phone</label>
               <input
                 className="input text-xs"
                 value={formData.phone}
@@ -203,7 +204,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">Contact Email</label>
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">Contact Email</label>
               <input
                 className="input text-xs"
                 type="email"
@@ -214,7 +215,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 Standard Check-in Time
               </label>
               <input
@@ -226,7 +227,7 @@ export default function PropertyModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-[#18312F] mb-1.5">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
                 Standard Check-out Time
               </label>
               <input
@@ -236,9 +237,22 @@ export default function PropertyModal({
                 onChange={(e) => setFormData({ ...formData, check_out_time: e.target.value })}
               />
             </div>
+
+            <div className="sm:col-span-2">
+              <label className="block font-semibold text-[#1A2B28] mb-1.5">
+                Description / House Rules (Optional)
+              </label>
+              <textarea
+                rows={2}
+                className="input text-xs"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="e.g. Quiet hours after 10 PM. No smoking inside heritage rooms."
+              />
+            </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#E8ECE9]">
+          <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#EAE5DC]">
             <button
               type="button"
               onClick={onClose}

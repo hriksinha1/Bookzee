@@ -5,16 +5,15 @@ import {
   LogOut,
   BedDouble,
   AlertCircle,
-  TrendingUp,
   Calendar,
   CreditCard,
   Building2,
-  ArrowUpRight,
+  ArrowRight,
   Clock,
   CheckCircle2,
   Plus,
-  ArrowRight,
-  ShieldAlert
+  AlertTriangle,
+  UserCheck
 } from 'lucide-react';
 import {
   AreaChart,
@@ -30,10 +29,13 @@ import { Booking, Payment, Customer, Property } from '../../lib/repository/types
 import { AppContextType } from '../../components/layout/AppShell';
 import { fmtINR, fmtDate } from '../../lib/utils/formatters';
 import { calculateBookingFinancials } from '../../lib/utils/financials';
+import { useToast } from '../../context/ToastContext';
+import AddPaymentModal from '../bookings/AddPaymentModal';
 
 export default function Dashboard() {
   const { propertyFilter } = useOutletContext<AppContextType>();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -41,7 +43,10 @@ export default function Dashboard() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  // Quick Payment Modal State
+  const [paymentModalData, setPaymentModalData] = useState<{ booking: Booking; balanceDue: number } | null>(null);
+
+  const loadData = () => {
     setLoading(true);
     Promise.all([
       repository.getBookings(propertyFilter || undefined),
@@ -55,21 +60,28 @@ export default function Dashboard() {
       setCustomers(custList);
       setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    loadData();
   }, [propertyFilter]);
 
   const activeProperty = properties.find((p) => p.id === propertyFilter);
   const todayStr = new Date().toISOString().split('T')[0];
 
-  // Derive operational metrics
-  const operations = useMemo(() => {
-    // Map payments by booking ID
-    const paymentsByBooking = new Map<string, Payment[]>();
+  // Map payments by booking ID
+  const paymentsByBooking = useMemo(() => {
+    const map = new Map<string, Payment[]>();
     payments.forEach((p) => {
-      const list = paymentsByBooking.get(p.booking_id) || [];
+      const list = map.get(p.booking_id) || [];
       list.push(p);
-      paymentsByBooking.set(p.booking_id, list);
+      map.set(p.booking_id, list);
     });
+    return map;
+  }, [payments]);
 
+  // Operational metrics
+  const operations = useMemo(() => {
     // 1. Arrivals today
     const arrivalsToday = bookings.filter(
       (b) => b.check_in === todayStr && b.booking_status !== 'Cancelled'
@@ -111,13 +123,78 @@ export default function Dashboard() {
       totalOutstanding,
       totalBookings: bookings.filter((b) => b.booking_status !== 'Cancelled').length
     };
-  }, [bookings, payments, todayStr]);
+  }, [bookings, paymentsByBooking, todayStr]);
 
-  // Real chart data aggregated from bookings across recent months/weeks
+  // Actionable payment attention exceptions (Section 14)
+  const needsAttention = useMemo(() => {
+    const items: Array<{
+      booking: Booking;
+      guestName: string;
+      propertyName: string;
+      dueAmount: number;
+      reason: string;
+      isTodayCheckout: boolean;
+    }> = [];
+
+    bookings.forEach((b) => {
+      if (b.booking_status === 'Cancelled') return;
+      const bPayments = paymentsByBooking.get(b.id) || [];
+      const fin = calculateBookingFinancials(b, bPayments);
+
+      if (fin.amountDue > 0) {
+        if (b.check_out === todayStr) {
+          items.push({
+            booking: b,
+            guestName: b.customer?.name || 'Guest',
+            propertyName: b.property?.name || 'Property',
+            dueAmount: fin.amountDue,
+            reason: 'Checkout today with unpaid balance',
+            isTodayCheckout: true
+          });
+        } else if (b.check_in === todayStr && fin.paid === 0) {
+          items.push({
+            booking: b,
+            guestName: b.customer?.name || 'Guest',
+            propertyName: b.property?.name || 'Property',
+            dueAmount: fin.amountDue,
+            reason: 'Arrival today without deposit',
+            isTodayCheckout: false
+          });
+        }
+      }
+    });
+
+    return items;
+  }, [bookings, paymentsByBooking, todayStr]);
+
+  // Handle Quick Check-in
+  const handleQuickCheckIn = async (b: Booking, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await repository.updateBooking(b.id, { booking_status: 'Checked In' });
+      toast.success('Guest Checked In', `${b.customer?.name || 'Guest'} marked as checked in.`);
+      loadData();
+    } catch {
+      toast.error('Check-in Failed', 'Could not update booking status.');
+    }
+  };
+
+  // Handle Quick Check-out
+  const handleQuickCheckOut = async (b: Booking, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await repository.updateBooking(b.id, { booking_status: 'Checked Out' });
+      toast.success('Guest Checked Out', `${b.customer?.name || 'Guest'} marked as checked out.`);
+      loadData();
+    } catch {
+      toast.error('Check-out Failed', 'Could not update booking status.');
+    }
+  };
+
+  // Real chart data aggregated from bookings across recent months
   const chartData = useMemo(() => {
     const monthsMap: Record<string, { month: string; revenue: number; collected: number }> = {};
 
-    // Seed last 4 calendar months
     for (let i = 3; i >= 0; i--) {
       const d = new Date();
       d.setMonth(d.getMonth() - i);
@@ -148,7 +225,7 @@ export default function Dashboard() {
     return Object.values(monthsMap);
   }, [bookings, payments]);
 
-  // Dynamic real activity feed derived from bookings and payments
+  // Operational Activity Stream
   const activityFeed = useMemo(() => {
     const events: Array<{
       id: string;
@@ -159,7 +236,7 @@ export default function Dashboard() {
       amount?: number;
     }> = [];
 
-    payments.slice(0, 5).forEach((p) => {
+    payments.slice(0, 4).forEach((p) => {
       if (p.status === 'Refunded') {
         events.push({
           id: p.id,
@@ -181,10 +258,10 @@ export default function Dashboard() {
       }
     });
 
-    bookings.slice(0, 4).forEach((b) => {
+    bookings.slice(0, 3).forEach((b) => {
       events.push({
         id: b.id,
-        title: `Booking ${b.booking_no} created`,
+        title: `Booking ${b.booking_no} confirmed`,
         subtitle: `${b.customer?.name || 'Guest'} • ${b.property?.name}`,
         time: b.created_at?.split('T')[0] || b.check_in,
         type: 'booking',
@@ -192,327 +269,443 @@ export default function Dashboard() {
       });
     });
 
-    return events.sort((a, b) => b.time.localeCompare(a.time)).slice(0, 6);
+    return events.sort((a, b) => b.time.localeCompare(a.time)).slice(0, 5);
   }, [bookings, payments]);
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-10 w-64 bg-stone-200 rounded-xl"></div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="h-28 bg-white border border-[#D4DED9] rounded-2xl"></div>
-          ))}
+      <div className="space-y-6 animate-pulse max-w-7xl mx-auto">
+        <div className="h-8 w-48 bg-[#EAE5DC] rounded-xl" />
+        <div className="h-28 bg-white border border-[#D8D2C5] rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="h-64 bg-white border border-[#D8D2C5] rounded-2xl" />
+          <div className="h-64 bg-white border border-[#D8D2C5] rounded-2xl" />
         </div>
-        <div className="h-64 bg-white border border-[#D4DED9] rounded-2xl"></div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Workspace Headline */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto font-sans text-[#1A2B28]">
+      {/* Overview Header (Requirement #10 & #11) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE5DC] pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#2F7D5A]" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#0F766E]">
-              Operational Overview
+            <span className="w-2 h-2 rounded-full bg-[#276749]" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#0D5C56]">
+              {propertyFilter ? activeProperty?.name : 'All Properties Portfolio'}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#18312F] mt-1 tracking-tight">
-            Today at {propertyFilter ? activeProperty?.name : 'Portfolio Overview'}
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1A2B28] mt-1">
+            Overview
           </h1>
-          <p className="text-sm text-[#5F716E] mt-0.5">
+          <p className="text-sm text-[#5C6E6B] mt-0.5">
             {new Date().toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
               day: 'numeric'
             })}{' '}
-            • Real-time room operations & collection status
+            • Manage today's stays, front desk operations, and collections.
           </p>
         </div>
 
-        {/* Quick Top Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <Link
             to="/calendar"
             className="btn btn-outline text-xs sm:text-sm flex items-center gap-2 bg-white"
           >
             <Calendar size={16} />
-            <span>Open Calendar</span>
+            <span>Calendar</span>
           </Link>
-          <Link
-            to="/bookings/new"
+          <button
+            onClick={() => navigate('/bookings/new')}
             className="btn btn-primary text-xs sm:text-sm flex items-center gap-2"
           >
             <Plus size={16} />
             <span>New Booking</span>
-          </Link>
+          </button>
         </div>
       </div>
 
-      {/* 1. TOP OPERATIONAL METRICS (Requirement #13) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Arrivals Card */}
-        <div
-          onClick={() => navigate('/bookings')}
-          className="card p-5 cursor-pointer hover:border-[#0F766E] transition-all group bg-white"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
-              Arrivals Today
-            </span>
-            <div className="w-8 h-8 rounded-xl bg-[#E6F3F1] text-[#0F766E] flex items-center justify-center">
-              <LogIn size={18} />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-[#18312F] tracking-tight">
-              {operations.arrivalsToday.length}
-            </span>
-            <span className="text-xs font-medium text-[#0F766E] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-              Check in <ArrowRight size={13} />
-            </span>
-          </div>
-          <div className="text-xs text-[#5F716E] mt-1">
-            {operations.arrivalsToday.length > 0 ? 'Guests arriving today' : 'No arrivals scheduled'}
-          </div>
-        </div>
-
-        {/* Departures Card */}
-        <div
-          onClick={() => navigate('/bookings')}
-          className="card p-5 cursor-pointer hover:border-[#0F766E] transition-all group bg-white"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
-              Departures Today
-            </span>
-            <div className="w-8 h-8 rounded-xl bg-[#FBEFEA] text-[#C65D3A] flex items-center justify-center">
-              <LogOut size={18} />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-[#18312F] tracking-tight">
-              {operations.departuresToday.length}
-            </span>
-            <span className="text-xs font-medium text-[#C65D3A] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-              Check out <ArrowRight size={13} />
-            </span>
-          </div>
-          <div className="text-xs text-[#5F716E] mt-1">
-            {operations.departuresToday.length > 0 ? 'Rooms clearing today' : 'No check-outs scheduled'}
-          </div>
-        </div>
-
-        {/* In-House Card */}
-        <div
-          onClick={() => navigate('/bookings')}
-          className="card p-5 cursor-pointer hover:border-[#0F766E] transition-all group bg-white"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
-              In-House Stays
-            </span>
-            <div className="w-8 h-8 rounded-xl bg-[#EAF5EE] text-[#2F7D5A] flex items-center justify-center">
-              <BedDouble size={18} />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-[#18312F] tracking-tight">
-              {operations.inHouse.length}
-            </span>
-            <span className="text-xs font-medium text-[#2F7D5A] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-              View all <ArrowRight size={13} />
-            </span>
-          </div>
-          <div className="text-xs text-[#5F716E] mt-1">Active occupied rooms</div>
-        </div>
-
-        {/* Outstanding Balance Card */}
-        <div
-          onClick={() => navigate('/outstanding')}
-          className="card p-5 cursor-pointer hover:border-[#B7791F] transition-all group bg-white"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#5F716E]">
-              Outstanding Due
-            </span>
-            <div className="w-8 h-8 rounded-xl bg-[#FDF5E8] text-[#B7791F] flex items-center justify-center">
-              <AlertCircle size={18} />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-bold text-[#18312F] tracking-tight">
-              {fmtINR(operations.totalOutstanding)}
-            </span>
-            <span className="text-xs font-medium text-[#B7791F] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-              Collect <ArrowRight size={13} />
-            </span>
-          </div>
-          <div className="text-xs text-[#5F716E] mt-1">Awaiting guest settlement</div>
-        </div>
-      </div>
-
-      {/* 2. TODAY'S OPERATIONS QUICK CTA BAR (Requirement #15) */}
-      <div className="card p-5 sm:p-6 bg-gradient-to-br from-white to-[#FAF8F5] border-[#D4DED9]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8ECE9] pb-4 mb-4">
+      {/* Primary "Today" Editorial Section (Requirement #11) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Left 2 Cols: Editorial Today Block */}
+        <div className="lg:col-span-2 card p-6 bg-white border-[#D8D2C5] flex flex-col justify-between">
           <div>
-            <h2 className="text-base font-semibold text-[#18312F] flex items-center gap-2">
-              <Clock size={18} className="text-[#0F766E]" />
-              Today's Key Actions
-            </h2>
-            <p className="text-xs text-[#5F716E] mt-0.5">
-              Immediate front-desk responsibilities requiring staff action today
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* Action 1: Arrivals */}
-          <div className="p-4 rounded-xl bg-white border border-[#E8ECE9] flex flex-col justify-between space-y-3">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-[#5F716E]">Front Desk Check-in</span>
-                <span className="px-2 py-0.5 rounded-full bg-[#E6F3F1] text-[#0F766E] text-xs font-semibold">
-                  {operations.arrivalsToday.length} Pending
-                </span>
-              </div>
-              <p className="text-sm font-semibold text-[#18312F] mt-2">
-                {operations.arrivalsToday.length > 0
-                  ? `${operations.arrivalsToday[0].customer?.name} & ${operations.arrivalsToday.length - 1} other guests`
-                  : 'All expected arrivals are up to date'}
-              </p>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#5C6E6B] flex items-center gap-1.5">
+                <Clock size={14} className="text-[#0D5C56]" /> Today's Operations
+              </span>
+              <span className="text-xs font-medium text-[#0D5C56] bg-[#E8F3F1] px-2.5 py-0.5 rounded-full">
+                Active Desk
+              </span>
             </div>
-            <button
+
+            <div className="mt-4">
+              <div className="text-xs text-[#8E9E9B]">Current Overview</div>
+              <div className="text-xl sm:text-2xl font-bold text-[#1A2B28] tracking-tight mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span>{operations.arrivalsToday.length} arrivals</span>
+                <span className="text-[#D8D2C5]">·</span>
+                <span>{operations.departuresToday.length} departures</span>
+                <span className="text-[#D8D2C5]">·</span>
+                <span>{operations.inHouse.length} in-house</span>
+                <span className="text-[#D8D2C5]">·</span>
+                <span className="text-[#C45532]">{fmtINR(operations.totalOutstanding)} due</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-5 mt-5 border-t border-[#EAE5DC]">
+            <div
               onClick={() => navigate('/bookings')}
-              className="btn btn-outline text-xs w-full justify-between"
+              className="p-3 rounded-xl bg-[#F8F7F4] hover:bg-[#F3F0EA] transition-colors cursor-pointer"
             >
-              <span>View Arrivals</span>
-              <ArrowRight size={14} />
-            </button>
-          </div>
-
-          {/* Action 2: Departures */}
-          <div className="p-4 rounded-xl bg-white border border-[#E8ECE9] flex flex-col justify-between space-y-3">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-[#5F716E]">Settlement & Check-out</span>
-                <span className="px-2 py-0.5 rounded-full bg-[#FBEFEA] text-[#C65D3A] text-xs font-semibold">
-                  {operations.departuresToday.length} Pending
-                </span>
+              <div className="text-xs text-[#5C6E6B] flex items-center justify-between">
+                <span>Arrivals</span>
+                <LogIn size={14} className="text-[#0D5C56]" />
               </div>
-              <p className="text-sm font-semibold text-[#18312F] mt-2">
-                {operations.departuresToday.length > 0
-                  ? `${operations.departuresToday[0].customer?.name} & ${operations.departuresToday.length - 1} other rooms`
-                  : 'No scheduled departures remaining'}
-              </p>
+              <div className="text-2xl font-bold text-[#1A2B28] mt-1">
+                {operations.arrivalsToday.length}
+              </div>
+              <div className="text-[11px] text-[#8E9E9B] mt-0.5">Scheduled today</div>
             </div>
-            <button
+
+            <div
               onClick={() => navigate('/bookings')}
-              className="btn btn-outline text-xs w-full justify-between"
+              className="p-3 rounded-xl bg-[#F8F7F4] hover:bg-[#F3F0EA] transition-colors cursor-pointer"
             >
-              <span>View Departures</span>
-              <ArrowRight size={14} />
-            </button>
-          </div>
-
-          {/* Action 3: Review Payments */}
-          <div className="p-4 rounded-xl bg-white border border-[#E8ECE9] flex flex-col justify-between space-y-3">
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-[#5F716E]">Balance Clearance</span>
-                <span className="px-2 py-0.5 rounded-full bg-[#FDF5E8] text-[#B7791F] text-xs font-semibold">
-                  {fmtINR(operations.totalOutstanding)} Due
-                </span>
+              <div className="text-xs text-[#5C6E6B] flex items-center justify-between">
+                <span>Departures</span>
+                <LogOut size={14} className="text-[#C45532]" />
               </div>
-              <p className="text-sm font-semibold text-[#18312F] mt-2">
-                Collect deposits & final payments before key return
-              </p>
+              <div className="text-2xl font-bold text-[#1A2B28] mt-1">
+                {operations.departuresToday.length}
+              </div>
+              <div className="text-[11px] text-[#8E9E9B] mt-0.5">Rooms clearing</div>
             </div>
-            <button
+
+            <div
+              onClick={() => navigate('/bookings')}
+              className="p-3 rounded-xl bg-[#F8F7F4] hover:bg-[#F3F0EA] transition-colors cursor-pointer"
+            >
+              <div className="text-xs text-[#5C6E6B] flex items-center justify-between">
+                <span>In-House</span>
+                <BedDouble size={14} className="text-[#276749]" />
+              </div>
+              <div className="text-2xl font-bold text-[#1A2B28] mt-1">
+                {operations.inHouse.length}
+              </div>
+              <div className="text-[11px] text-[#8E9E9B] mt-0.5">Active staying</div>
+            </div>
+
+            <div
               onClick={() => navigate('/outstanding')}
-              className="btn btn-primary text-xs w-full justify-between"
+              className="p-3 rounded-xl bg-[#FAF0EB] hover:bg-[#F5E5DC] transition-colors cursor-pointer"
             >
-              <span>Review Payments</span>
-              <ArrowRight size={14} />
-            </button>
+              <div className="text-xs text-[#C45532] font-medium flex items-center justify-between">
+                <span>Outstanding</span>
+                <AlertCircle size={14} />
+              </div>
+              <div className="text-xl font-bold text-[#C45532] mt-1 truncate">
+                {fmtINR(operations.totalOutstanding)}
+              </div>
+              <div className="text-[11px] text-[#C45532]/80 mt-0.5">Awaiting collection</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right 1 Col: Needs Attention Operational Box (Requirement #14) */}
+        <div className="card p-6 bg-[#FAF9F6] border-[#D8D2C5] flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-[#EAE5DC]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#C45532] flex items-center gap-1.5">
+                <AlertTriangle size={15} /> Needs Attention
+              </span>
+              <span className="text-xs text-[#5C6E6B]">
+                {needsAttention.length} item{needsAttention.length === 1 ? '' : 's'}
+              </span>
+            </div>
+
+            <div className="mt-3 space-y-2.5 max-h-56 overflow-y-auto pr-1">
+              {needsAttention.length === 0 ? (
+                <div className="py-8 text-center text-xs text-[#5C6E6B]">
+                  <CheckCircle2 size={24} className="text-[#276749] mx-auto mb-1.5 opacity-80" />
+                  All check-out balances and today's arrival deposits are cleared.
+                </div>
+              ) : (
+                needsAttention.slice(0, 3).map((item) => (
+                  <div
+                    key={item.booking.id}
+                    onClick={() => navigate(`/bookings/${item.booking.id}`)}
+                    className="p-3 rounded-xl bg-white border border-[#EAE5DC] hover:border-[#C45532] transition-colors cursor-pointer group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-xs text-[#1A2B28] group-hover:text-[#C45532] transition-colors">
+                        {item.guestName}
+                      </span>
+                      <span className="font-bold text-xs text-[#C45532]">
+                        {fmtINR(item.dueAmount)} due
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-[#5C6E6B] mt-1">
+                      {item.propertyName} • {item.reason}
+                    </div>
+                    <div className="mt-2 flex items-center justify-end">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPaymentModalData({ booking: item.booking, balanceDue: item.dueAmount });
+                        }}
+                        className="text-[11px] font-semibold text-[#0D5C56] hover:underline flex items-center gap-1"
+                      >
+                        Record payment <ArrowRight size={12} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-[#EAE5DC] text-right">
+            <Link
+              to="/outstanding"
+              className="text-xs font-semibold text-[#0D5C56] hover:underline inline-flex items-center gap-1"
+            >
+              View all outstanding balances <ArrowRight size={13} />
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* 3. SECONDARY BUSINESS PERFORMANCE STRIP (Requirement #14) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-4 rounded-2xl border border-[#D4DED9]">
-        <div className="p-2">
-          <div className="text-xs text-[#5F716E]">Total Portfolio Stays</div>
-          <div className="text-xl font-bold text-[#18312F] mt-1">
-            {operations.totalBookings}
+      {/* Operational Lists: Today's Arrivals & Departures (Requirements #12 & #13) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Today's Arrivals */}
+        <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#EAE5DC]">
+            <div>
+              <h2 className="text-base font-bold text-[#1A2B28] flex items-center gap-2">
+                <LogIn size={18} className="text-[#0D5C56]" /> Today's Arrivals
+              </h2>
+              <p className="text-xs text-[#5C6E6B] mt-0.5">
+                Guests expected at the front desk today
+              </p>
+            </div>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#E8F3F1] text-[#0D5C56]">
+              {operations.arrivalsToday.length} arrivals
+            </span>
           </div>
+
+          {operations.arrivalsToday.length === 0 ? (
+            <div className="py-8 text-center text-xs text-[#5C6E6B]">
+              No guest arrivals scheduled for today.
+            </div>
+          ) : (
+            <div className="divide-y divide-[#EAE5DC] max-h-80 overflow-y-auto">
+              {operations.arrivalsToday.map((b) => {
+                const bPayments = paymentsByBooking.get(b.id) || [];
+                const fin = calculateBookingFinancials(b, bPayments);
+
+                return (
+                  <div
+                    key={b.id}
+                    onClick={() => navigate(`/bookings/${b.id}`)}
+                    className="py-3 px-2 flex items-center justify-between hover:bg-[#F8F7F4] transition-colors rounded-lg cursor-pointer group"
+                  >
+                    <div className="min-w-0 pr-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-[#1A2B28] group-hover:text-[#0D5C56] transition-colors truncate">
+                          {b.customer?.name || 'Guest'}
+                        </span>
+                        <span
+                          className={`badge text-[10px] ${
+                            fin.paymentStatus === 'Paid'
+                              ? 'bg-[#EBF6EF] text-[#276749] border border-[#BDDFC9]'
+                              : fin.paymentStatus === 'Partially Paid'
+                              ? 'bg-[#FDF5E8] text-[#B7791F] border border-[#F5DCAD]'
+                              : 'bg-[#FDF0F0] text-[#B84A4A] border border-[#F7C6C6]'
+                          }`}
+                        >
+                          {fin.paymentStatus}
+                        </span>
+                      </div>
+                      <div className="text-xs text-[#5C6E6B] mt-0.5 truncate">
+                        {b.property?.name} • {b.room_type}
+                      </div>
+                      <div className="text-[11px] text-[#8E9E9B] mt-0.5">
+                        Expected: {b.property?.check_in_time || '14:00'} • {b.nights}{' '}
+                        {b.nights === 1 ? 'night' : 'nights'}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {b.booking_status !== 'Checked In' ? (
+                        <button
+                          onClick={(e) => handleQuickCheckIn(b, e)}
+                          className="btn btn-outline text-xs py-1.5 px-3 bg-white hover:bg-[#E8F3F1] hover:text-[#0D5C56] border-[#D8D2C5]"
+                        >
+                          <UserCheck size={14} className="mr-1 text-[#0D5C56]" />
+                          Check in
+                        </button>
+                      ) : (
+                        <span className="text-xs text-[#276749] font-medium flex items-center gap-1">
+                          <CheckCircle2 size={14} /> In-house
+                        </span>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/bookings/${b.id}`);
+                        }}
+                        className="p-1.5 text-[#8E9E9B] hover:text-[#1A2B28]"
+                        title="Open booking"
+                      >
+                        <ArrowRight size={16} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-        <div className="p-2 border-l border-[#E8ECE9]">
-          <div className="text-xs text-[#5F716E]">Gross Revenue</div>
-          <div className="text-xl font-bold text-[#18312F] mt-1">
-            {fmtINR(operations.totalRevenue)}
+
+        {/* Today's Departures */}
+        <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#EAE5DC]">
+            <div>
+              <h2 className="text-base font-bold text-[#1A2B28] flex items-center gap-2">
+                <LogOut size={18} className="text-[#C45532]" /> Today's Departures
+              </h2>
+              <p className="text-xs text-[#5C6E6B] mt-0.5">
+                Stays concluding today requiring settlement & key handover
+              </p>
+            </div>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#FAF0EB] text-[#C45532]">
+              {operations.departuresToday.length} departures
+            </span>
           </div>
-        </div>
-        <div className="p-2 border-l border-[#E8ECE9]">
-          <div className="text-xs text-[#5F716E]">Collected Revenue</div>
-          <div className="text-xl font-bold text-[#2F7D5A] mt-1">
-            {fmtINR(operations.totalCollected)}
-          </div>
-        </div>
-        <div className="p-2 border-l border-[#E8ECE9]">
-          <div className="text-xs text-[#5F716E]">Collection Rate</div>
-          <div className="text-xl font-bold text-[#0F766E] mt-1">
-            {operations.totalRevenue > 0
-              ? `${Math.round((operations.totalCollected / operations.totalRevenue) * 100)}%`
-              : '100%'}
-          </div>
+
+          {operations.departuresToday.length === 0 ? (
+            <div className="py-8 text-center text-xs text-[#5C6E6B]">
+              No guest departures scheduled for today.
+            </div>
+          ) : (
+            <div className="divide-y divide-[#EAE5DC] max-h-80 overflow-y-auto">
+              {operations.departuresToday.map((b) => {
+                const bPayments = paymentsByBooking.get(b.id) || [];
+                const fin = calculateBookingFinancials(b, bPayments);
+
+                return (
+                  <div
+                    key={b.id}
+                    onClick={() => navigate(`/bookings/${b.id}`)}
+                    className="py-3 px-2 flex items-center justify-between hover:bg-[#F8F7F4] transition-colors rounded-lg cursor-pointer group"
+                  >
+                    <div className="min-w-0 pr-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-[#1A2B28] group-hover:text-[#C45532] transition-colors truncate">
+                          {b.customer?.name || 'Guest'}
+                        </span>
+                        {fin.amountDue > 0 ? (
+                          <span className="badge text-[10px] bg-[#FAF0EB] text-[#C45532] border border-[#F5DCAD] font-bold">
+                            {fmtINR(fin.amountDue)} due
+                          </span>
+                        ) : (
+                          <span className="badge text-[10px] bg-[#EBF6EF] text-[#276749] border border-[#BDDFC9]">
+                            Paid in full
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs text-[#5C6E6B] mt-0.5 truncate">
+                        {b.property?.name} • {b.room_type}
+                      </div>
+                      <div className="text-[11px] text-[#8E9E9B] mt-0.5">
+                        Check-out time: {b.property?.check_out_time || '11:00'}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {fin.amountDue > 0 ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPaymentModalData({ booking: b, balanceDue: fin.amountDue });
+                          }}
+                          className="btn btn-accent text-xs py-1.5 px-3"
+                        >
+                          Record payment
+                        </button>
+                      ) : b.booking_status !== 'Checked Out' ? (
+                        <button
+                          onClick={(e) => handleQuickCheckOut(b, e)}
+                          className="btn btn-outline text-xs py-1.5 px-3 bg-white hover:bg-stone-50"
+                        >
+                          Check out
+                        </button>
+                      ) : (
+                        <span className="text-xs text-[#5C6E6B] font-medium">Checked Out</span>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/bookings/${b.id}`);
+                        }}
+                        className="p-1.5 text-[#8E9E9B] hover:text-[#1A2B28]"
+                        title="Open booking"
+                      >
+                        <ArrowRight size={16} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* 4. REVENUE TREND CHART & ACTIVITY FEED */}
+      {/* Analytics & Restrained Activity Stream (Requirements #15 & #34) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Revenue Trend Chart */}
-        <div className="lg:col-span-2 card p-5 sm:p-6 space-y-4">
+        {/* Left 2 Cols: Revenue & Collection Trend Chart */}
+        <div className="lg:col-span-2 card p-6 bg-white border-[#D8D2C5] space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-semibold text-[#18312F]">
+              <h3 className="text-base font-bold text-[#1A2B28]">
                 Revenue & Collection Trend
               </h3>
-              <p className="text-xs text-[#5F716E] mt-0.5">
-                Aggregated from actual bookings and confirmed payment transactions
+              <p className="text-xs text-[#5C6E6B] mt-0.5">
+                Calculated strictly from real bookings and confirmed receipts
               </p>
             </div>
-            <div className="flex items-center gap-4 text-xs">
-              <span className="flex items-center gap-1.5 text-[#5F716E]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0F766E]"></span> Gross Revenue
+            <div className="flex items-center gap-4 text-xs font-medium">
+              <span className="flex items-center gap-1.5 text-[#5C6E6B]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#0D5C56]" /> Gross Booking Value
               </span>
-              <span className="flex items-center gap-1.5 text-[#5F716E]">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#C65D3A]"></span> Collected
+              <span className="flex items-center gap-1.5 text-[#5C6E6B]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C45532]" /> Net Collected
               </span>
             </div>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0F766E" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#0F766E" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#0D5C56" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#0D5C56" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorCol" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C65D3A" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#C65D3A" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#C45532" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#C45532" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E8ECE9" vertical={false} />
-                <XAxis dataKey="month" stroke="#8B9B97" fontSize={12} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#EAE5DC" vertical={false} />
+                <XAxis dataKey="month" stroke="#8E9E9B" fontSize={12} tickLine={false} />
                 <YAxis
-                  stroke="#8B9B97"
+                  stroke="#8E9E9B"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
@@ -523,15 +716,15 @@ export default function Dashboard() {
                   contentStyle={{
                     backgroundColor: '#FFFFFF',
                     borderRadius: '12px',
-                    borderColor: '#D4DED9',
-                    boxShadow: '0 4px 12px rgba(15, 35, 30, 0.08)'
+                    borderColor: '#D8D2C5',
+                    boxShadow: '0 4px 12px rgba(20, 35, 30, 0.08)'
                   }}
                 />
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  name="Gross Revenue"
-                  stroke="#0F766E"
+                  name="Gross Booking Value"
+                  stroke="#0D5C56"
                   strokeWidth={2.5}
                   fillOpacity={1}
                   fill="url(#colorRev)"
@@ -539,8 +732,8 @@ export default function Dashboard() {
                 <Area
                   type="monotone"
                   dataKey="collected"
-                  name="Collected"
-                  stroke="#C65D3A"
+                  name="Net Collected"
+                  stroke="#C45532"
                   strokeWidth={2}
                   fillOpacity={1}
                   fill="url(#colorCol)"
@@ -550,23 +743,29 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Right 1 Col: Live Activity Feed (Requirement #17) */}
-        <div className="card p-5 sm:p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-semibold text-[#18312F]">Recent Activity</h3>
-            <span className="text-xs text-[#5F716E]">Live events</span>
+        {/* Right 1 Col: Restrained Activity Stream (Requirement #15) */}
+        <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#EAE5DC]">
+            <div>
+              <h3 className="text-base font-bold text-[#1A2B28]">Recent Activity</h3>
+              <p className="text-xs text-[#5C6E6B] mt-0.5">Chronological operations log</p>
+            </div>
+            <span className="text-xs text-[#8E9E9B]">Verified events</span>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="space-y-3">
             {activityFeed.map((item) => (
-              <div key={item.id} className="flex items-start gap-3 text-xs pb-3 border-b border-[#E8ECE9] last:border-0 last:pb-0">
+              <div
+                key={item.id}
+                className="flex items-start gap-3 text-xs pb-3 border-b border-[#EAE5DC] last:border-0 last:pb-0"
+              >
                 <div
                   className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
                     item.type === 'payment'
-                      ? 'bg-[#EAF5EE] text-[#2F7D5A]'
+                      ? 'bg-[#EBF6EF] text-[#276749]'
                       : item.type === 'refund'
                       ? 'bg-[#FDF0F0] text-[#B84A4A]'
-                      : 'bg-[#E6F3F1] text-[#0F766E]'
+                      : 'bg-[#E8F3F1] text-[#0D5C56]'
                   }`}
                 >
                   {item.type === 'payment' ? (
@@ -578,14 +777,14 @@ export default function Dashboard() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-[#18312F] truncate">{item.title}</div>
-                  <div className="text-[#5F716E] truncate mt-0.5">{item.subtitle}</div>
-                  <div className="text-[11px] text-[#8B9B97] mt-0.5">{fmtDate(item.time)}</div>
+                  <div className="font-semibold text-[#1A2B28] truncate">{item.title}</div>
+                  <div className="text-[#5C6E6B] truncate mt-0.5">{item.subtitle}</div>
+                  <div className="text-[11px] text-[#8E9E9B] mt-0.5">{fmtDate(item.time)}</div>
                 </div>
                 {item.amount && (
                   <div
                     className={`font-semibold shrink-0 ${
-                      item.type === 'refund' ? 'text-[#B84A4A]' : 'text-[#18312F]'
+                      item.type === 'refund' ? 'text-[#B84A4A]' : 'text-[#1A2B28]'
                     }`}
                   >
                     {item.type === 'refund' ? '-' : ''}
@@ -598,97 +797,18 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 5. RECENT BOOKINGS LIST (Requirement #16) */}
-      <div className="card p-5 sm:p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-base font-semibold text-[#18312F]">Recent Stays</h3>
-            <p className="text-xs text-[#5F716E] mt-0.5">
-              Latest bookings across properties. Click any row to view full details.
-            </p>
-          </div>
-          <Link
-            to="/bookings"
-            className="text-xs font-semibold text-[#0F766E] hover:underline flex items-center gap-1"
-          >
-            View all bookings <ArrowRight size={14} />
-          </Link>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-[#E8ECE9] text-xs font-semibold text-[#5F716E] uppercase tracking-wider">
-                <th className="py-3 px-3">Guest & Code</th>
-                <th className="py-3 px-3">Property</th>
-                <th className="py-3 px-3">Dates</th>
-                <th className="py-3 px-3 text-right">Total</th>
-                <th className="py-3 px-3 text-center">Stay Status</th>
-                <th className="py-3 px-3 text-center">Payment</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E8ECE9]">
-              {bookings.slice(0, 6).map((b) => {
-                const bPayments = payments.filter((p) => p.booking_id === b.id);
-                const fin = calculateBookingFinancials(b, bPayments);
-
-                return (
-                  <tr
-                    key={b.id}
-                    onClick={() => navigate(`/bookings/${b.id}`)}
-                    className="hover:bg-[#FAF8F5] cursor-pointer transition-colors group"
-                  >
-                    <td className="py-3 px-3">
-                      <div className="font-semibold text-[#18312F] group-hover:text-[#0F766E] transition-colors">
-                        {b.customer?.name || 'Guest'}
-                      </div>
-                      <div className="text-xs text-[#8B9B97] font-mono">{b.booking_no}</div>
-                    </td>
-                    <td className="py-3 px-3 text-xs text-[#5F716E]">
-                      {b.property?.name || 'Property'}
-                    </td>
-                    <td className="py-3 px-3 text-xs text-[#18312F]">
-                      {fmtDate(b.check_in)} – {fmtDate(b.check_out)}
-                      <div className="text-[11px] text-[#8B9B97]">
-                        {b.nights} {b.nights === 1 ? 'night' : 'nights'} • {b.room_type}
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-right font-semibold text-[#18312F]">
-                      {fmtINR(fin.bookingTotal)}
-                    </td>
-                    <td className="py-3 px-3 text-center">
-                      <span
-                        className={`badge ${
-                          b.booking_status === 'Checked In'
-                            ? 'bg-[#EAF5EE] text-[#2F7D5A] border border-[#BDE4CD]'
-                            : b.booking_status === 'Checked Out'
-                            ? 'bg-stone-100 text-stone-600 border border-stone-200'
-                            : 'bg-[#E6F3F1] text-[#0F766E] border border-[#BDE4CD]'
-                        }`}
-                      >
-                        {b.booking_status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3 text-center">
-                      <span
-                        className={`badge ${
-                          fin.paymentStatus === 'Paid'
-                            ? 'bg-[#EAF5EE] text-[#2F7D5A] border border-[#BDE4CD]'
-                            : fin.paymentStatus === 'Partially Paid'
-                            ? 'bg-[#FDF5E8] text-[#B7791F] border border-[#F6DBA9]'
-                            : 'bg-[#FDF0F0] text-[#B84A4A] border border-[#F7C5C5]'
-                        }`}
-                      >
-                        {fin.paymentStatus}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Embedded Modal for Direct Payments Recording */}
+      {paymentModalData && (
+        <AddPaymentModal
+          booking={paymentModalData.booking}
+          balanceDue={paymentModalData.balanceDue}
+          onClose={() => setPaymentModalData(null)}
+          onSuccess={() => {
+            setPaymentModalData(null);
+            loadData();
+          }}
+        />
+      )}
     </div>
   );
 }

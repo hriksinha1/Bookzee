@@ -183,11 +183,11 @@ export default function CalendarView() {
         {/* View Mode and New Stay */}
         <div className="flex items-center gap-3 flex-wrap">
           {/* View Mode Tabs */}
-          <div className="flex items-center p-1 bg-white border border-[#D4DED9] rounded-xl text-xs font-medium">
+          <div className="flex items-center p-1 bg-white border border-[#D8D2C5] rounded-xl text-xs font-medium">
             <button
               onClick={() => setViewMode('month')}
               className={`px-3 py-1.5 rounded-lg transition-colors ${
-                viewMode === 'month' ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold' : 'text-[#5F716E]'
+                viewMode === 'month' ? 'bg-[#E8F3F1] text-[#0D5C56] font-semibold' : 'text-[#5C6E6B]'
               }`}
             >
               Month
@@ -195,7 +195,7 @@ export default function CalendarView() {
             <button
               onClick={() => setViewMode('week')}
               className={`px-3 py-1.5 rounded-lg transition-colors ${
-                viewMode === 'week' ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold' : 'text-[#5F716E]'
+                viewMode === 'week' ? 'bg-[#E8F3F1] text-[#0D5C56] font-semibold' : 'text-[#5C6E6B]'
               }`}
             >
               Week
@@ -203,7 +203,7 @@ export default function CalendarView() {
             <button
               onClick={() => setViewMode('day')}
               className={`px-3 py-1.5 rounded-lg transition-colors ${
-                viewMode === 'day' ? 'bg-[#E6F3F1] text-[#0F766E] font-semibold' : 'text-[#5F716E]'
+                viewMode === 'day' ? 'bg-[#E8F3F1] text-[#0D5C56] font-semibold' : 'text-[#5C6E6B]'
               }`}
             >
               Day
@@ -221,30 +221,30 @@ export default function CalendarView() {
       </div>
 
       {/* Navigation Controls & Month Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#D4DED9]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#D8D2C5]">
         <div className="flex items-center gap-2">
           <button
             onClick={handlePrev}
-            className="p-2 rounded-xl hover:bg-[#F7F5F0] text-[#18312F] border border-[#D4DED9] transition-colors"
+            className="p-2 rounded-xl hover:bg-[#F8F7F4] text-[#1A2B28] border border-[#D8D2C5] transition-colors"
             title="Previous"
           >
             <ChevronLeft size={18} />
           </button>
           <button
             onClick={handleToday}
-            className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-[#F7F5F0] hover:bg-[#E6F3F1] text-[#18312F] border border-[#D4DED9] transition-colors"
+            className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-[#F8F7F4] hover:bg-[#E8F3F1] text-[#1A2B28] border border-[#D8D2C5] transition-colors"
           >
             Today
           </button>
           <button
             onClick={handleNext}
-            className="p-2 rounded-xl hover:bg-[#F7F5F0] text-[#18312F] border border-[#D4DED9] transition-colors"
+            className="p-2 rounded-xl hover:bg-[#F8F7F4] text-[#1A2B28] border border-[#D8D2C5] transition-colors"
             title="Next"
           >
             <ChevronRight size={18} />
           </button>
 
-          <h2 className="text-base sm:text-lg font-bold text-[#18312F] ml-2">
+          <h2 className="text-base sm:text-lg font-bold text-[#1A2B28] ml-2">
             {currentDate.toLocaleDateString('en-US', {
               month: 'long',
               year: 'numeric',
@@ -254,24 +254,24 @@ export default function CalendarView() {
         </div>
 
         {/* Legend */}
-        <div className="flex items-center gap-4 text-xs text-[#5F716E] flex-wrap">
+        <div className="flex items-center gap-4 text-xs text-[#5C6E6B] flex-wrap">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#0F766E]" /> Confirmed Stay
+            <span className="w-2.5 h-2.5 rounded-full bg-[#0D5C56]" /> Confirmed Stay
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#B7791F]" /> Payment Due
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C45532]" /> Payment Due
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#8B9B97]" /> Checked Out
+            <span className="w-2.5 h-2.5 rounded-full bg-[#8E9E9B]" /> Checked Out
           </span>
         </div>
       </div>
 
       {/* Main Calendar Viewport */}
       {viewMode === 'month' && (
-        <div className="card overflow-hidden bg-white border-[#D4DED9]">
+        <div className="card overflow-hidden bg-white border-[#D8D2C5]">
           {/* Weekday headers */}
-          <div className="grid grid-cols-7 border-b border-[#E8ECE9] bg-[#FAF8F5] text-center text-xs font-semibold text-[#5F716E] py-2.5">
+          <div className="grid grid-cols-7 border-b border-[#EAE5DC] bg-[#FAF9F6] text-center text-xs font-semibold text-[#5C6E6B] py-2.5">
             <div>Sun</div>
             <div>Mon</div>
             <div>Tue</div>
@@ -282,7 +282,7 @@ export default function CalendarView() {
           </div>
 
           {/* Month grid */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-[#E8ECE9]">
+          <div className="grid grid-cols-7 divide-x divide-y divide-[#EAE5DC]">
             {monthDays.map((day) => {
               const dayBookings = getBookingsForDate(day.dateStr);
 
@@ -290,23 +290,23 @@ export default function CalendarView() {
                 <div
                   key={day.dateStr}
                   className={`min-h-[110px] p-2 transition-colors flex flex-col justify-between ${
-                    day.isCurrentMonth ? 'bg-white' : 'bg-[#FAF8F5]/60 text-stone-400'
-                  } ${day.isToday ? 'ring-2 ring-[#0F766E] ring-inset' : ''}`}
+                    day.isCurrentMonth ? 'bg-white' : 'bg-[#FAF9F6]/60 text-stone-400'
+                  } ${day.isToday ? 'ring-2 ring-[#0D5C56] ring-inset' : ''}`}
                 >
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-xs font-semibold w-6 h-6 rounded-full flex items-center justify-center ${
                         day.isToday
-                          ? 'bg-[#0F766E] text-white font-bold'
+                          ? 'bg-[#0D5C56] text-white font-bold'
                           : day.isCurrentMonth
-                          ? 'text-[#18312F]'
+                          ? 'text-[#1A2B28]'
                           : 'text-stone-400'
                       }`}
                     >
                       {day.dayNumber}
                     </span>
                     {dayBookings.length > 0 && (
-                      <span className="text-[10px] font-medium text-[#5F716E]">
+                      <span className="text-[10px] font-medium text-[#5C6E6B]">
                         {dayBookings.length} {dayBookings.length === 1 ? 'stay' : 'stays'}
                       </span>
                     )}
@@ -328,8 +328,8 @@ export default function CalendarView() {
                             b.booking_status === 'Checked Out'
                               ? 'bg-stone-100 text-stone-600 border-stone-200'
                               : fin.paymentStatus === 'Unpaid' || fin.paymentStatus === 'Partially Paid'
-                              ? 'bg-[#FDF5E8] text-[#B7791F] border-[#F6DBA9] hover:bg-[#FBE8CD]'
-                              : 'bg-[#E6F3F1] text-[#0F766E] border-[#BDE4CD] hover:bg-[#D5EFEA]'
+                              ? 'bg-[#FAF0EB] text-[#C45532] border-[#F5DCAD] hover:bg-[#F5E5DC]'
+                              : 'bg-[#E8F3F1] text-[#0D5C56] border-[#BDDFC9] hover:bg-[#D5EFEA]'
                           }`}
                           title={`${b.customer?.name || 'Guest'} (${b.booking_no}) • ${b.room_type}`}
                         >
@@ -348,7 +348,7 @@ export default function CalendarView() {
                           setCurrentDate(new Date(day.dateStr));
                           setViewMode('day');
                         }}
-                        className="text-[10px] text-[#0F766E] font-medium pl-1 hover:underline block"
+                        className="text-[10px] text-[#0D5C56] font-medium pl-1 hover:underline block"
                       >
                         +{dayBookings.length - 2} more stays
                       </button>
@@ -363,8 +363,8 @@ export default function CalendarView() {
 
       {/* Week View */}
       {viewMode === 'week' && (
-        <div className="card overflow-hidden bg-white border-[#D4DED9]">
-          <div className="grid grid-cols-7 border-b border-[#E8ECE9] divide-x divide-[#E8ECE9]">
+        <div className="card overflow-hidden bg-white border-[#D8D2C5]">
+          <div className="grid grid-cols-7 border-b border-[#EAE5DC] divide-x divide-[#EAE5DC]">
             {weekDays.map((w) => {
               const dayBookings = getBookingsForDate(w.dateStr);
 
@@ -372,14 +372,14 @@ export default function CalendarView() {
                 <div
                   key={w.dateStr}
                   className={`p-3 min-h-[360px] flex flex-col ${
-                    w.isToday ? 'bg-[#E6F3F1]/30' : 'bg-white'
+                    w.isToday ? 'bg-[#E8F3F1]/30' : 'bg-white'
                   }`}
                 >
-                  <div className="border-b border-[#E8ECE9] pb-2 mb-3 text-center">
-                    <div className="text-xs text-[#5F716E] font-medium">{w.dayName}</div>
+                  <div className="border-b border-[#EAE5DC] pb-2 mb-3 text-center">
+                    <div className="text-xs text-[#5C6E6B] font-medium">{w.dayName}</div>
                     <div
                       className={`text-lg font-bold mt-0.5 inline-flex w-8 h-8 rounded-full items-center justify-center ${
-                        w.isToday ? 'bg-[#0F766E] text-white' : 'text-[#18312F]'
+                        w.isToday ? 'bg-[#0D5C56] text-white' : 'text-[#1A2B28]'
                       }`}
                     >
                       {w.dayNumber}
@@ -397,23 +397,23 @@ export default function CalendarView() {
                         <div
                           key={b.id}
                           onClick={() => setSelectedBooking(b)}
-                          className="p-2.5 rounded-xl border border-[#D4DED9] bg-white hover:border-[#0F766E] shadow-2xs hover:shadow-sm cursor-pointer transition-all space-y-1"
+                          className="p-2.5 rounded-xl border border-[#D8D2C5] bg-white hover:border-[#0D5C56] shadow-2xs hover:shadow-xs cursor-pointer transition-all space-y-1"
                         >
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="font-semibold text-[#18312F] truncate">
+                            <span className="font-semibold text-[#1A2B28] truncate">
                               {b.customer?.name}
                             </span>
                             <span className="text-[10px] px-1.5 py-0.2 rounded bg-stone-100 font-mono">
                               {b.booking_no}
                             </span>
                           </div>
-                          <div className="text-[11px] text-[#5F716E] truncate">{b.room_type}</div>
-                          <div className="flex items-center justify-between text-[10px] pt-1 border-t border-[#E8ECE9]">
+                          <div className="text-[11px] text-[#5C6E6B] truncate">{b.room_type}</div>
+                          <div className="flex items-center justify-between text-[10px] pt-1 border-t border-[#EAE5DC]">
                             <span
                               className={`px-1.5 py-0.5 rounded font-medium ${
                                 fin.paymentStatus === 'Paid'
-                                  ? 'bg-[#EAF5EE] text-[#2F7D5A]'
-                                  : 'bg-[#FDF5E8] text-[#B7791F]'
+                                  ? 'bg-[#EBF6EF] text-[#276749]'
+                                  : 'bg-[#FAF0EB] text-[#C45532]'
                               }`}
                             >
                               {fin.paymentStatus}
@@ -436,8 +436,8 @@ export default function CalendarView() {
 
       {/* Day View */}
       {viewMode === 'day' && (
-        <div className="card p-6 bg-white border-[#D4DED9] space-y-4">
-          <div className="flex items-center justify-between border-b border-[#E8ECE9] pb-4">
+        <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
+          <div className="flex items-center justify-between border-b border-[#EAE5DC] pb-4">
             <div>
               <h3 className="text-lg font-semibold text-[#18312F]">
                 Operations on {fmtDate(currentDate.toISOString().split('T')[0])}
@@ -463,42 +463,42 @@ export default function CalendarView() {
                 <div
                   key={b.id}
                   onClick={() => setSelectedBooking(b)}
-                  className="p-4 rounded-xl border border-[#D4DED9] hover:border-[#0F766E] transition-all bg-[#FAF8F5] cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  className="p-4 rounded-xl border border-[#D8D2C5] hover:border-[#0D5C56] transition-all bg-[#FAF9F6] cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-base text-[#18312F]">
+                      <span className="font-semibold text-base text-[#1A2B28]">
                         {b.customer?.name || 'Guest'}
                       </span>
                       <span className="text-xs font-mono text-stone-500 bg-white px-2 py-0.5 rounded border border-stone-200">
                         {b.booking_no}
                       </span>
                       {isArrival && (
-                        <span className="badge bg-[#E6F3F1] text-[#0F766E] border border-[#BDE4CD]">
+                        <span className="badge bg-[#E8F3F1] text-[#0D5C56] border border-[#BDDFC9]">
                           Arriving Today
                         </span>
                       )}
                       {isDeparture && (
-                        <span className="badge bg-[#FBEFEA] text-[#C65D3A] border border-[#F7C5C5]">
+                        <span className="badge bg-[#FAF0EB] text-[#C45532] border border-[#F5DCAD]">
                           Departing Today
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-[#5F716E]">
+                    <div className="text-xs text-[#5C6E6B]">
                       {b.property?.name} • {b.room_type} • {b.nights} nights
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <div className="font-bold text-sm text-[#18312F]">{fmtINR(b.grand_total)}</div>
-                      <div className="text-xs text-[#5F716E]">
+                      <div className="font-bold text-sm text-[#1A2B28]">{fmtINR(b.grand_total)}</div>
+                      <div className="text-xs text-[#5C6E6B]">
                         {fin.amountDue > 0 ? (
-                          <span className="text-[#B7791F] font-semibold">
+                          <span className="text-[#C45532] font-semibold">
                             Due: {fmtINR(fin.amountDue)}
                           </span>
                         ) : (
-                          <span className="text-[#2F7D5A]">Paid in Full</span>
+                          <span className="text-[#276749]">Paid in Full</span>
                         )}
                       </div>
                     </div>
@@ -526,43 +526,43 @@ export default function CalendarView() {
           onClick={() => setSelectedBooking(null)}
         >
           <div
-            className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-[#D4DED9] p-6 space-y-4"
+            className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-[#D8D2C5] p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#0F766E]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#0D5C56]">
                   Stay Preview
                 </span>
-                <h3 className="text-xl font-bold text-[#18312F] mt-1">
+                <h3 className="text-xl font-bold text-[#1A2B28] mt-1">
                   {selectedBooking.customer?.name}
                 </h3>
-                <p className="text-xs text-[#5F716E] font-mono">{selectedBooking.booking_no}</p>
+                <p className="text-xs text-[#5C6E6B] font-mono">{selectedBooking.booking_no}</p>
               </div>
-              <span className="badge bg-[#E6F3F1] text-[#0F766E] border border-[#BDE4CD]">
+              <span className="badge bg-[#E8F3F1] text-[#0D5C56] border border-[#BDDFC9]">
                 {selectedBooking.booking_status}
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8ECE9] space-y-2 text-xs">
+            <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE5DC] space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-[#5F716E]">Property:</span>
-                <span className="font-medium text-[#18312F]">{selectedBooking.property?.name}</span>
+                <span className="text-[#5C6E6B]">Property:</span>
+                <span className="font-medium text-[#1A2B28]">{selectedBooking.property?.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#5F716E]">Room Type:</span>
-                <span className="font-medium text-[#18312F]">{selectedBooking.room_type}</span>
+                <span className="text-[#5C6E6B]">Room Type:</span>
+                <span className="font-medium text-[#1A2B28]">{selectedBooking.room_type}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#5F716E]">Stay Duration:</span>
-                <span className="font-medium text-[#18312F]">
+                <span className="text-[#5C6E6B]">Stay Duration:</span>
+                <span className="font-medium text-[#1A2B28]">
                   {fmtDate(selectedBooking.check_in)} – {fmtDate(selectedBooking.check_out)} (
                   {selectedBooking.nights} nights)
                 </span>
               </div>
-              <div className="flex justify-between pt-1 border-t border-[#E8ECE9]">
-                <span className="text-[#5F716E]">Total Booking Amount:</span>
-                <span className="font-bold text-sm text-[#18312F]">
+              <div className="flex justify-between pt-1 border-t border-[#EAE5DC]">
+                <span className="text-[#5C6E6B]">Total Booking Amount:</span>
+                <span className="font-bold text-sm text-[#1A2B28]">
                   {fmtINR(selectedBooking.grand_total)}
                 </span>
               </div>

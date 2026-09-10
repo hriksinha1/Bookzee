@@ -41,7 +41,11 @@ export default function BookingDetail() {
   const [settings, setSettings] = useState<SystemSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPayModal, setShowPayModal] = useState(false);
-  const [sharingModal, setSharingModal] = useState<{ open: boolean; channel: 'whatsapp' | 'email'; docName: string }>({
+  const [sharingModal, setSharingModal] = useState<{
+    open: boolean;
+    channel: 'whatsapp' | 'email';
+    docName: string;
+  }>({
     open: false,
     channel: 'whatsapp',
     docName: ''
@@ -151,8 +155,8 @@ export default function BookingDetail() {
       <div className="animate-pulse space-y-6 max-w-5xl mx-auto">
         <div className="h-10 w-64 bg-stone-200 rounded-xl"></div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-96 bg-white rounded-2xl border border-[#D4DED9]"></div>
-          <div className="h-96 bg-white rounded-2xl border border-[#D4DED9]"></div>
+          <div className="lg:col-span-2 h-96 bg-white rounded-2xl border border-[#D8D2C5]"></div>
+          <div className="h-96 bg-white rounded-2xl border border-[#D8D2C5]"></div>
         </div>
       </div>
     );
@@ -165,26 +169,26 @@ export default function BookingDetail() {
         <div className="flex items-center gap-3">
           <Link
             to="/bookings"
-            className="p-2 rounded-xl border border-[#D4DED9] bg-white text-[#5F716E] hover:text-[#18312F] hover:bg-[#FAF8F5] transition-colors"
+            className="p-2 rounded-xl border border-[#D8D2C5] bg-white text-[#5C6E6B] hover:text-[#1A2B28] hover:bg-[#FAF9F6] transition-colors"
           >
             <ArrowLeft size={18} />
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#0F766E]">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#0D5C56]">
                 Stay Confirmation
               </span>
-              <span className="text-xs font-mono font-bold bg-[#E6F3F1] text-[#0F766E] px-2 py-0.5 rounded-full border border-[#BDE4CD]">
+              <span className="text-xs font-mono font-bold bg-[#E8F3F1] text-[#0D5C56] px-2 py-0.5 rounded-full border border-[#BDDFC9]">
                 {booking.booking_no}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-semibold text-[#18312F] mt-1 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-[#1A2B28] mt-1 tracking-tight">
               {booking.customer?.name}
             </h1>
           </div>
         </div>
 
-        {/* Primary Contextual Action Button (Requirement #22) */}
+        {/* Primary Contextual Action Button */}
         <div className="flex items-center gap-2.5 flex-wrap">
           {financials.amountDue > 0 ? (
             <button
@@ -195,7 +199,7 @@ export default function BookingDetail() {
               <span>Record Payment ({fmtINR(financials.amountDue)} due)</span>
             </button>
           ) : (
-            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#EAF5EE] text-[#2F7D5A] border border-[#BDE4CD] text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#EBF6EF] text-[#276749] border border-[#BDDFC9] text-xs font-semibold">
               <CheckCircle2 size={16} />
               <span>Paid in Full</span>
             </div>
@@ -207,7 +211,7 @@ export default function BookingDetail() {
               onClick={() => handleUpdateStayStatus('Checked In')}
               className="btn btn-outline text-xs sm:text-sm flex items-center gap-2 bg-white"
             >
-              <LogIn size={15} className="text-[#0F766E]" />
+              <LogIn size={15} className="text-[#0D5C56]" />
               <span>Mark Checked In</span>
             </button>
           )}
@@ -215,7 +219,7 @@ export default function BookingDetail() {
           {booking.booking_status === 'Checked In' && (
             <button
               onClick={() => handleUpdateStayStatus('Checked Out')}
-              className="btn btn-outline text-xs sm:text-sm flex items-center gap-2 bg-white text-[#C65D3A] border-[#F7C5C5] hover:bg-[#FBEFEA]"
+              className="btn btn-outline text-xs sm:text-sm flex items-center gap-2 bg-white text-[#C45532] border-[#F5DCAD] hover:bg-[#FAF0EB]"
             >
               <LogOut size={15} />
               <span>Complete Check-out</span>
@@ -229,24 +233,24 @@ export default function BookingDetail() {
         {/* Left 2 Cols: Stay & Financial Source of Truth */}
         <div className="lg:col-span-2 space-y-6">
           {/* Key Stay Details Card */}
-          <div className="card p-6 bg-white border-[#D4DED9] space-y-5">
-            <div className="flex items-center justify-between border-b border-[#E8ECE9] pb-4">
+          <div className="card p-6 bg-white border-[#D8D2C5] space-y-5">
+            <div className="flex items-center justify-between border-b border-[#EAE5DC] pb-4">
               <div>
-                <span className="text-xs font-semibold text-[#5F716E]">Property & Room</span>
-                <h3 className="text-lg font-bold text-[#18312F] mt-0.5">
+                <span className="text-xs font-semibold text-[#5C6E6B]">Property & Room</span>
+                <h3 className="text-lg font-bold text-[#1A2B28] mt-0.5">
                   {booking.property?.name}
                 </h3>
-                <p className="text-xs text-[#5F716E]">{booking.property?.location}</p>
+                <p className="text-xs text-[#5C6E6B]">{booking.property?.location}</p>
               </div>
 
               <div className="flex items-center gap-2">
                 <span
                   className={`badge ${
                     booking.booking_status === 'Checked In'
-                      ? 'bg-[#EAF5EE] text-[#2F7D5A] border border-[#BDE4CD]'
+                      ? 'bg-[#EBF6EF] text-[#276749] border border-[#BDDFC9]'
                       : booking.booking_status === 'Checked Out'
                       ? 'bg-stone-100 text-stone-600 border border-stone-200'
-                      : 'bg-[#E6F3F1] text-[#0F766E] border border-[#BDE4CD]'
+                      : 'bg-[#E8F3F1] text-[#0D5C56] border border-[#BDDFC9]'
                   }`}
                 >
                   {booking.booking_status}
@@ -254,10 +258,10 @@ export default function BookingDetail() {
                 <span
                   className={`badge ${
                     financials.paymentStatus === 'Paid'
-                      ? 'bg-[#EAF5EE] text-[#2F7D5A] border border-[#BDE4CD]'
+                      ? 'bg-[#EBF6EF] text-[#276749] border border-[#BDDFC9]'
                       : financials.paymentStatus === 'Partially Paid'
-                      ? 'bg-[#FDF5E8] text-[#B7791F] border border-[#F6DBA9]'
-                      : 'bg-[#FDF0F0] text-[#B84A4A] border border-[#F7C5C5]'
+                      ? 'bg-[#FAF0EB] text-[#C45532] border border-[#F5DCAD]'
+                      : 'bg-rose-50 text-rose-700 border border-rose-200'
                   }`}
                 >
                   {financials.paymentStatus}
@@ -266,27 +270,27 @@ export default function BookingDetail() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-              <div className="p-3 rounded-xl bg-[#FAF8F5]">
-                <div className="text-[#5F716E]">Check-in</div>
-                <div className="font-semibold text-sm text-[#18312F] mt-1">
+              <div className="p-3 rounded-xl bg-[#FAF9F6]">
+                <div className="text-[#5C6E6B]">Check-in</div>
+                <div className="font-semibold text-sm text-[#1A2B28] mt-1">
                   {fmtDate(booking.check_in)}
                 </div>
               </div>
-              <div className="p-3 rounded-xl bg-[#FAF8F5]">
-                <div className="text-[#5F716E]">Check-out</div>
-                <div className="font-semibold text-sm text-[#18312F] mt-1">
+              <div className="p-3 rounded-xl bg-[#FAF9F6]">
+                <div className="text-[#5C6E6B]">Check-out</div>
+                <div className="font-semibold text-sm text-[#1A2B28] mt-1">
                   {fmtDate(booking.check_out)}
                 </div>
               </div>
-              <div className="p-3 rounded-xl bg-[#FAF8F5]">
-                <div className="text-[#5F716E]">Duration</div>
-                <div className="font-semibold text-sm text-[#18312F] mt-1">
+              <div className="p-3 rounded-xl bg-[#FAF9F6]">
+                <div className="text-[#5C6E6B]">Duration</div>
+                <div className="font-semibold text-sm text-[#1A2B28] mt-1">
                   {booking.nights} {booking.nights === 1 ? 'night' : 'nights'}
                 </div>
               </div>
-              <div className="p-3 rounded-xl bg-[#FAF8F5]">
-                <div className="text-[#5F716E]">Occupancy</div>
-                <div className="font-semibold text-sm text-[#18312F] mt-1">
+              <div className="p-3 rounded-xl bg-[#FAF9F6]">
+                <div className="text-[#5C6E6B]">Occupancy</div>
+                <div className="font-semibold text-sm text-[#1A2B28] mt-1">
                   {booking.guests} {booking.guests === 1 ? 'guest' : 'guests'} ({booking.rooms} rm)
                 </div>
               </div>
@@ -294,39 +298,39 @@ export default function BookingDetail() {
           </div>
 
           {/* Financial Breakdown Card */}
-          <div className="card p-6 bg-white border-[#D4DED9] space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E8ECE9] pb-3">
-              <h3 className="text-base font-semibold text-[#18312F]">Financial Breakdown</h3>
-              <span className="text-xs text-[#5F716E]">Tax Invoice Calculation</span>
+          <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
+            <div className="flex items-center justify-between border-b border-[#EAE5DC] pb-3">
+              <h3 className="text-base font-semibold text-[#1A2B28]">Financial Breakdown</h3>
+              <span className="text-xs text-[#5C6E6B]">Tax Invoice Calculation</span>
             </div>
 
             <div className="space-y-2.5 text-xs">
-              <div className="flex justify-between text-[#5F716E]">
+              <div className="flex justify-between text-[#5C6E6B]">
                 <span>Accommodation Charges ({booking.nights} nights @ {booking.room_type}):</span>
-                <span className="font-medium text-[#18312F]">{fmtINR(booking.base_amount)}</span>
+                <span className="font-medium text-[#1A2B28]">{fmtINR(booking.base_amount)}</span>
               </div>
 
               {booking.tax_enabled && (
-                <div className="flex justify-between text-[#5F716E]">
+                <div className="flex justify-between text-[#5C6E6B]">
                   <span>GST ({booking.tax_rate}%):</span>
-                  <span className="font-medium text-[#18312F]">{fmtINR(booking.tax_amount)}</span>
+                  <span className="font-medium text-[#1A2B28]">{fmtINR(booking.tax_amount)}</span>
                 </div>
               )}
 
-              <div className="flex justify-between text-sm font-bold text-[#18312F] pt-2 border-t border-[#E8ECE9]">
+              <div className="flex justify-between text-sm font-bold text-[#1A2B28] pt-2 border-t border-[#EAE5DC]">
                 <span>Total Booking Amount:</span>
                 <span>{fmtINR(financials.bookingTotal)}</span>
               </div>
 
-              <div className="flex justify-between text-xs text-[#2F7D5A] font-semibold pt-1">
+              <div className="flex justify-between text-xs text-[#276749] font-semibold pt-1">
                 <span>Total Paid:</span>
                 <span>{fmtINR(financials.netPaid)}</span>
               </div>
 
-              <div className="flex justify-between text-sm font-bold pt-2 border-t border-[#E8ECE9]">
-                <span className="text-[#18312F]">Amount Due:</span>
+              <div className="flex justify-between text-sm font-bold pt-2 border-t border-[#EAE5DC]">
+                <span className="text-[#1A2B28]">Amount Due:</span>
                 <span
-                  className={financials.amountDue > 0 ? 'text-[#B7791F]' : 'text-[#2F7D5A]'}
+                  className={financials.amountDue > 0 ? 'text-[#C45532]' : 'text-[#276749]'}
                 >
                   {fmtINR(financials.amountDue)}
                 </span>
@@ -335,11 +339,11 @@ export default function BookingDetail() {
           </div>
 
           {/* Payment History Ledger */}
-          <div className="card p-6 bg-white border-[#D4DED9] space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E8ECE9] pb-3">
+          <div className="card p-6 bg-white border-[#D8D2C5] space-y-4">
+            <div className="flex items-center justify-between border-b border-[#EAE5DC] pb-3">
               <div>
-                <h3 className="text-base font-semibold text-[#18312F]">Payment History</h3>
-                <p className="text-xs text-[#5F716E] mt-0.5">
+                <h3 className="text-base font-semibold text-[#1A2B28]">Payment History</h3>
+                <p className="text-xs text-[#5C6E6B] mt-0.5">
                   {payments.length} transaction(s) recorded for this stay
                 </p>
               </div>
@@ -356,14 +360,14 @@ export default function BookingDetail() {
             </div>
 
             {payments.length === 0 ? (
-              <div className="py-8 text-center text-xs text-[#5F716E]">
+              <div className="py-8 text-center text-xs text-[#5C6E6B]">
                 No payments have been recorded yet.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
                   <thead>
-                    <tr className="border-b border-[#E8ECE9] bg-[#FAF8F5] text-[#5F716E] font-semibold uppercase tracking-wider">
+                    <tr className="border-b border-[#EAE5DC] bg-[#FAF9F6] text-[#5C6E6B] font-semibold uppercase tracking-wider">
                       <th className="py-2.5 px-3">Receipt No</th>
                       <th className="py-2.5 px-3">Date</th>
                       <th className="py-2.5 px-3">Method</th>
@@ -372,25 +376,25 @@ export default function BookingDetail() {
                       <th className="py-2.5 px-3 text-right">Document</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E8ECE9]">
+                  <tbody className="divide-y divide-[#EAE5DC]">
                     {payments.map((p, idx) => (
-                      <tr key={p.id} className="hover:bg-[#FAF8F5] transition-colors">
-                        <td className="py-3 px-3 font-mono font-medium text-[#18312F]">
+                      <tr key={p.id} className="hover:bg-[#FAF9F6] transition-colors">
+                        <td className="py-3 px-3 font-mono font-medium text-[#1A2B28]">
                           {p.payment_no}
                           {p.ref_id && (
-                            <div className="text-[10px] text-[#8B9B97]">Ref: {p.ref_id}</div>
+                            <div className="text-[10px] text-[#5C6E6B]">Ref: {p.ref_id}</div>
                           )}
                         </td>
-                        <td className="py-3 px-3 text-[#5F716E]">{fmtDate(p.date)}</td>
-                        <td className="py-3 px-3 text-[#18312F] font-medium">{p.method}</td>
-                        <td className="py-3 px-3 text-[#5F716E]">{p.purpose}</td>
-                        <td className="py-3 px-3 text-right font-bold text-[#18312F]">
+                        <td className="py-3 px-3 text-[#5C6E6B]">{fmtDate(p.date)}</td>
+                        <td className="py-3 px-3 text-[#1A2B28] font-medium">{p.method}</td>
+                        <td className="py-3 px-3 text-[#5C6E6B]">{p.purpose}</td>
+                        <td className="py-3 px-3 text-right font-bold text-[#1A2B28]">
                           {fmtINR(p.amount)}
                         </td>
                         <td className="py-3 px-3 text-right">
                           <button
                             onClick={() => handleDownloadReceipt(p, idx)}
-                            className="text-xs font-semibold text-[#0F766E] hover:underline inline-flex items-center gap-1"
+                            className="text-xs font-semibold text-[#0D5C56] hover:underline inline-flex items-center gap-1"
                           >
                             <Download size={12} />
                             <span>PDF</span>
@@ -407,25 +411,25 @@ export default function BookingDetail() {
 
         {/* Right 1 Col: Documents & Guest Profile */}
         <div className="space-y-6">
-          {/* Official Hospitality Documents (Requirement #22) */}
-          <div className="card p-5 bg-white border-[#D4DED9] space-y-4">
-            <div className="border-b border-[#E8ECE9] pb-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F766E]">
+          {/* Official Hospitality Documents */}
+          <div className="card p-5 bg-white border-[#D8D2C5] space-y-4">
+            <div className="border-b border-[#EAE5DC] pb-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0D5C56]">
                 Guest Documents
               </span>
-              <h3 className="text-base font-bold text-[#18312F] mt-0.5">Invoices & Receipts</h3>
+              <h3 className="text-base font-bold text-[#1A2B28] mt-0.5">Invoices & Receipts</h3>
             </div>
 
             <div className="space-y-3">
               {/* Tax Invoice */}
-              <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E8ECE9] space-y-2">
+              <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE5DC] space-y-2">
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="font-semibold text-xs text-[#18312F] flex items-center gap-1.5">
-                      <FileText size={14} className="text-[#0F766E]" />
+                    <div className="font-semibold text-xs text-[#1A2B28] flex items-center gap-1.5">
+                      <FileText size={14} className="text-[#0D5C56]" />
                       Tax Invoice
                     </div>
-                    <div className="text-[11px] text-[#5F716E] mt-0.5">
+                    <div className="text-[11px] text-[#5C6E6B] mt-0.5">
                       GST-compliant stay invoice
                     </div>
                   </div>
@@ -456,8 +460,8 @@ export default function BookingDetail() {
               </div>
 
               {/* Guest Sharing Options */}
-              <div className="pt-2 text-xs text-[#5F716E] space-y-2">
-                <div className="font-semibold text-[#18312F]">Quick Share</div>
+              <div className="pt-2 text-xs text-[#5C6E6B] space-y-2">
+                <div className="font-semibold text-[#1A2B28]">Quick Share</div>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() =>
@@ -467,9 +471,9 @@ export default function BookingDetail() {
                         docName: `Booking Details ${booking.booking_no}`
                       })
                     }
-                    className="p-2 rounded-xl bg-[#FAF8F5] hover:bg-[#E6F3F1] border border-[#E8ECE9] text-[#18312F] flex items-center justify-center gap-1.5 transition-colors"
+                    className="p-2 rounded-xl bg-[#FAF9F6] hover:bg-[#E8F3F1] border border-[#EAE5DC] text-[#1A2B28] flex items-center justify-center gap-1.5 transition-colors"
                   >
-                    <Share2 size={13} className="text-[#2F7D5A]" />
+                    <Share2 size={13} className="text-[#276749]" />
                     <span>WhatsApp</span>
                   </button>
                   <button
@@ -480,9 +484,9 @@ export default function BookingDetail() {
                         docName: `Stay Voucher ${booking.booking_no}`
                       })
                     }
-                    className="p-2 rounded-xl bg-[#FAF8F5] hover:bg-[#E6F3F1] border border-[#E8ECE9] text-[#18312F] flex items-center justify-center gap-1.5 transition-colors"
+                    className="p-2 rounded-xl bg-[#FAF9F6] hover:bg-[#E8F3F1] border border-[#EAE5DC] text-[#1A2B28] flex items-center justify-center gap-1.5 transition-colors"
                   >
-                    <Mail size={13} className="text-[#0F766E]" />
+                    <Mail size={13} className="text-[#0D5C56]" />
                     <span>Email</span>
                   </button>
                 </div>
@@ -491,35 +495,42 @@ export default function BookingDetail() {
           </div>
 
           {/* Guest Profile Details */}
-          <div className="card p-5 bg-white border-[#D4DED9] space-y-4">
-            <div className="border-b border-[#E8ECE9] pb-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F766E]">
+          <div className="card p-5 bg-white border-[#D8D2C5] space-y-4">
+            <div className="border-b border-[#EAE5DC] pb-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#0D5C56]">
                 Guest Profile
               </span>
-              <h3 className="text-base font-bold text-[#18312F] mt-0.5">
+              <h3 className="text-base font-bold text-[#1A2B28] mt-0.5">
                 {booking.customer?.name}
               </h3>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="flex items-center gap-2 text-[#5F716E]">
-                <Phone size={14} className="text-[#0F766E]" />
-                <span className="text-[#18312F] font-medium">
+              <div className="flex items-center gap-2 text-[#5C6E6B]">
+                <Phone size={14} className="text-[#0D5C56]" />
+                <span className="text-[#1A2B28] font-medium">
                   {booking.customer?.phone || 'No phone recorded'}
                 </span>
               </div>
 
               {booking.customer?.email && (
-                <div className="flex items-center gap-2 text-[#5F716E]">
-                  <Mail size={14} className="text-[#0F766E]" />
-                  <span className="text-[#18312F] font-medium">{booking.customer.email}</span>
+                <div className="flex items-center gap-2 text-[#5C6E6B]">
+                  <Mail size={14} className="text-[#0D5C56]" />
+                  <span className="text-[#1A2B28] font-medium">{booking.customer.email}</span>
+                </div>
+              )}
+
+              {booking.customer?.city && (
+                <div className="flex items-center gap-2 text-[#5C6E6B]">
+                  <Building2 size={14} className="text-[#0D5C56]" />
+                  <span className="text-[#1A2B28] font-medium">{booking.customer.city}</span>
                 </div>
               )}
 
               {booking.customer?.id_type && (
-                <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E8ECE9] space-y-1">
-                  <div className="text-[11px] text-[#5F716E]">Government Identity Verification:</div>
-                  <div className="font-semibold text-[#18312F]">
+                <div className="p-3 rounded-xl bg-[#FAF9F6] border border-[#EAE5DC] space-y-1">
+                  <div className="text-[11px] text-[#5C6E6B]">Government Identity Verification:</div>
+                  <div className="font-semibold text-[#1A2B28]">
                     {booking.customer.id_type}: {booking.customer.id_number}
                   </div>
                 </div>
@@ -548,22 +559,22 @@ export default function BookingDetail() {
           onClick={() => setSharingModal({ ...sharingModal, open: false })}
         >
           <div
-            className="w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-[#D4DED9] p-6 space-y-4"
+            className="w-full max-w-sm bg-white rounded-2xl shadow-2xl border border-[#D8D2C5] p-6 space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-[#E6F3F1] text-[#0F766E] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-[#E8F3F1] text-[#0D5C56] flex items-center justify-center">
                 <Share2 size={20} />
               </div>
               <div>
-                <h3 className="font-bold text-base text-[#18312F]">
+                <h3 className="font-bold text-base text-[#1A2B28]">
                   Share via {sharingModal.channel === 'whatsapp' ? 'WhatsApp' : 'Email'}
                 </h3>
-                <p className="text-xs text-[#5F716E]">{sharingModal.docName}</p>
+                <p className="text-xs text-[#5C6E6B]">{sharingModal.docName}</p>
               </div>
             </div>
 
-            <p className="text-xs text-[#18312F] bg-[#FAF8F5] p-3 rounded-xl border border-[#E8ECE9]">
+            <p className="text-xs text-[#1A2B28] bg-[#FAF9F6] p-3 rounded-xl border border-[#EAE5DC]">
               {sharingModal.channel === 'whatsapp'
                 ? `Guest voucher link will be sent to WhatsApp number: ${
                     booking.customer?.phone || '+91 98765 43210'

@@ -115,40 +115,40 @@ export default function AddPaymentModal({
   if (successData) {
     return (
       <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl border border-[#D4DED9] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95">
+        <div className="bg-white rounded-2xl shadow-2xl border border-[#D8D2C5] w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95">
           <div className="p-6 text-center space-y-3">
-            <div className="w-14 h-14 rounded-full bg-[#EAF5EE] text-[#2F7D5A] flex items-center justify-center mx-auto">
+            <div className="w-14 h-14 rounded-full bg-[#EBF6EF] text-[#276749] flex items-center justify-center mx-auto">
               <CheckCircle2 size={32} />
             </div>
-            <h2 className="text-xl font-bold text-[#18312F]">Payment Recorded</h2>
-            <p className="text-xs text-[#5F716E]">
+            <h2 className="text-xl font-bold text-[#1A2B28]">Payment Recorded</h2>
+            <p className="text-xs text-[#5C6E6B]">
               {successData.newBalance > 0
                 ? `${fmtINR(successData.newBalance)} remaining due on this booking.`
                 : 'This reservation is now fully settled and paid in full.'}
             </p>
 
-            <div className="p-4 rounded-xl bg-[#FAF8F5] border border-[#E8ECE9] space-y-1.5 text-xs my-3 text-left">
+            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE5DC] space-y-1.5 text-xs my-3 text-left">
               <div className="flex justify-between">
-                <span className="text-[#5F716E]">Receipt Number:</span>
-                <span className="font-mono font-semibold text-[#18312F]">
+                <span className="text-[#5C6E6B]">Receipt Number:</span>
+                <span className="font-mono font-semibold text-[#1A2B28]">
                   {successData.payment.payment_no}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#5F716E]">Amount Received:</span>
-                <span className="font-bold text-sm text-[#2F7D5A]">
+                <span className="text-[#5C6E6B]">Amount Received:</span>
+                <span className="font-bold text-sm text-[#276749]">
                   {fmtINR(successData.numAmount)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#5F716E]">Method:</span>
-                <span className="text-[#18312F]">{successData.payment.method}</span>
+                <span className="text-[#5C6E6B]">Method:</span>
+                <span className="text-[#1A2B28]">{successData.payment.method}</span>
               </div>
-              <div className="flex justify-between pt-1 border-t border-[#E8ECE9]">
-                <span className="text-[#5F716E]">Remaining Due:</span>
+              <div className="flex justify-between pt-1 border-t border-[#EAE5DC]">
+                <span className="text-[#5C6E6B]">Remaining Due:</span>
                 <span
                   className={`font-semibold ${
-                    successData.newBalance > 0 ? 'text-[#B7791F]' : 'text-[#2F7D5A]'
+                    successData.newBalance > 0 ? 'text-[#C45532]' : 'text-[#276749]'
                   }`}
                 >
                   {fmtINR(successData.newBalance)}
@@ -179,32 +179,32 @@ export default function AddPaymentModal({
 
   return (
     <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl border border-[#D4DED9] w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95">
+      <div className="bg-white rounded-2xl shadow-2xl border border-[#D8D2C5] w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#E8ECE9] flex items-center justify-between bg-[#FAF8F5]">
+        <div className="px-6 py-4 border-b border-[#EAE5DC] flex items-center justify-between bg-[#FAF9F6]">
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#0F766E]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#0D5C56]">
               Settlement
             </div>
-            <h3 className="text-base font-bold text-[#18312F]">Record Payment</h3>
+            <h3 className="text-base font-bold text-[#1A2B28]">Record Payment</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-stone-400 hover:text-[#18312F] hover:bg-stone-100 transition-colors"
+            className="p-1 rounded-lg text-stone-400 hover:text-[#1A2B28] hover:bg-stone-100 transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Current Balance Summary Banner */}
-        <div className="p-4 bg-[#E6F3F1] border-b border-[#BDE4CD] flex items-center justify-between">
+        <div className="p-4 bg-[#E8F3F1] border-b border-[#BDDFC9] flex items-center justify-between">
           <div>
-            <div className="text-xs text-[#0F766E] font-medium">Guest: {booking.customer?.name}</div>
-            <div className="text-[11px] text-[#5F716E]">{booking.booking_no} • {booking.property?.name}</div>
+            <div className="text-xs text-[#0D5C56] font-medium">Guest: {booking.customer?.name}</div>
+            <div className="text-[11px] text-[#5C6E6B]">{booking.booking_no} • {booking.property?.name}</div>
           </div>
           <div className="text-right">
-            <div className="text-[11px] text-[#5F716E]">Outstanding Due</div>
-            <div className="text-lg font-bold text-[#18312F]">{fmtINR(balanceDue)}</div>
+            <div className="text-[11px] text-[#5C6E6B]">Outstanding Due</div>
+            <div className="text-lg font-bold text-[#1A2B28]">{fmtINR(balanceDue)}</div>
           </div>
         </div>
 
@@ -219,13 +219,13 @@ export default function AddPaymentModal({
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-semibold text-[#18312F]">
+              <label className="block text-xs font-semibold text-[#1A2B28]">
                 Payment Amount (₹) <span className="text-rose-500">*</span>
               </label>
               <button
                 type="button"
                 onClick={() => setAmount(balanceDue)}
-                className="text-xs font-semibold text-[#0F766E] hover:underline"
+                className="text-xs font-semibold text-[#0D5C56] hover:underline"
               >
                 Pay Full Balance ({fmtINR(balanceDue)})
               </button>
@@ -237,13 +237,13 @@ export default function AddPaymentModal({
               max={balanceDue}
               value={amount}
               onChange={(e) => setAmount(e.target.value === '' ? '' : Number(e.target.value))}
-              className="input text-base font-bold text-[#18312F]"
+              className="input text-base font-bold text-[#1A2B28]"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#18312F] mb-1.5">
+              <label className="block text-xs font-semibold text-[#1A2B28] mb-1.5">
                 Payment Method
               </label>
               <select
@@ -260,7 +260,7 @@ export default function AddPaymentModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#18312F] mb-1.5">
+              <label className="block text-xs font-semibold text-[#1A2B28] mb-1.5">
                 Payment Purpose
               </label>
               <select
@@ -279,7 +279,7 @@ export default function AddPaymentModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-[#18312F] mb-1.5">
+              <label className="block text-xs font-semibold text-[#1A2B28] mb-1.5">
                 Transaction Ref / UTR (Optional)
               </label>
               <input
@@ -292,7 +292,7 @@ export default function AddPaymentModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#18312F] mb-1.5">
+              <label className="block text-xs font-semibold text-[#1A2B28] mb-1.5">
                 Payment Date
               </label>
               <input
@@ -305,7 +305,7 @@ export default function AddPaymentModal({
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#E8ECE9]">
+          <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#EAE5DC]">
             <button
               type="button"
               onClick={onClose}
